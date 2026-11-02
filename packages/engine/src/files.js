@@ -2,6 +2,9 @@ import { readFile } from 'node:fs/promises'
 import { resolve as resolvePath } from 'node:path'
 import { glob } from 'tinyglobby'
 
+/** Source maps (`.map`, and Nuxt's `.map.json`) hold unbundled sources: never scanned. */
+export const SOURCE_MAP = /\.map(?:\.json)?$/i
+
 /** Extensions worth scanning. CSS (including Blue's own output) and source maps never are. */
 export const SCANNABLE = /\.(?:html?|[cm]?js|jsx|tsx?|vue|svelte|astro|mdx?|json|txt|xml|php|twig|njk|liquid|hbs|erb)$/i
 
@@ -21,7 +24,7 @@ export async function findFiles(content, options = {}) {
     dot: false,
     ignore: ['**/node_modules/**', '**/.git/**', ...(options.ignore ?? [])],
   })
-  return files.filter((f) => SCANNABLE.test(f)).sort()
+  return files.filter((f) => SCANNABLE.test(f) && !SOURCE_MAP.test(f)).sort()
 }
 
 /**

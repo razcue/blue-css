@@ -18,18 +18,53 @@ styles your output actually uses.
 
 See [RFC.md](./RFC.md) for the design and roadmap.
 
-> Status: milestone 1 (core + CLI). The Vite plugin, Nuxt module and reka-ui
-> preset are next.
+> Status: milestone 2 (core, CLI, Vite plugin, Nuxt module). Next:
+> `blue-css doctor` and the reka-ui preset.
 
 ## Quick start
+
+### Nuxt
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@blue-css/nuxt'],
+  blue: {
+    safelist: [],   // module ids or tokens for content rendered at runtime
+    content: [],    // extra globs to scan, e.g. 'content/**/*.md'
+  },
+})
+```
+
+- `nuxi dev` serves the full stylesheet.
+- `nuxi build` and `nuxi generate` scan every client chunk plus the app's own
+  server modules, so server components and islands are covered.
+- The module writes `_nuxt/blue.<hash>.css`, which Nitro serves with immutable
+  caching, and links it from every SSR, prerendered and SPA page.
+
+### Vite
+
+```js
+// vite.config.js
+import blue from '@blue-css/vite'
+
+export default defineConfig({ plugins: [blue()] })
+```
+
+- `vite dev` links the full stylesheet from `index.html`.
+- `vite build` scans the final bundle (every chunk, including what libraries in
+  `node_modules` render) and the HTML entries.
+- It emits `assets/blue-<hash>.css` and links it. For SSR setups without an
+  `index.html`, pass `inject: false` and read `plugin.api.href`.
+
+### Anything else
 
 ```html
 <!-- once published; until then: pnpm build → packages/core/dist/blue.min.css -->
 <link rel="stylesheet" href="https://unpkg.com/@blue-css/core/dist/blue.min.css">
 ```
 
-During development you can use the full stylesheet. In production, run the CLI
-**after** your framework builds:
+In production, run the CLI **after** your framework builds:
 
 ```bash
 vite build && blue-css build dist -o dist/assets/blue.css --report
@@ -189,7 +224,7 @@ How it works:
 
 ```bash
 pnpm install
-pnpm test      # engine + CLI unit tests
+pnpm test      # engine, CLI, Vite (real builds) and Nuxt (end-to-end build) tests
 pnpm build     # packages/core/dist/blue.css (+ .min.css)
 pnpm verify    # screenshots every example with full vs. shaken CSS; must be pixel-identical
 ```
@@ -198,5 +233,7 @@ pnpm verify    # screenshots every example with full vs. shaken CSS; must be pix
 packages/core     CSS modules + manifest.js (the source of truth)
 packages/engine   scanner, resolver, builder (lightningcss)
 packages/cli      the `blue-css` binary
+packages/vite     Vite plugin (test/fixtures/app is a Vue app)
+packages/nuxt     Nuxt module (playground/ is a Nuxt app with a server component)
 examples/         HTML recipes = docs = verification fixtures
 ```

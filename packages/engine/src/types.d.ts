@@ -63,6 +63,15 @@ export interface BuildResult {
   excluded: string[]
 }
 
+export interface Context {
+  manifests: Manifest[]
+  scanner: ReturnType<typeof createScanner>
+  build(tokens: Set<Token> | 'all'): Promise<BuildResult>
+}
+
+export function createContext(config?: Config & { cwd?: string }): Promise<Context>
+export function contentHash(css: string): string
+export function summary(result: BuildResult): string
 export function defineConfig(config: Config): Config
 export function loadConfig(options?: { cwd?: string; file?: string }): Promise<Config & { configFile?: string }>
 export function loadManifests(presets?: Array<Manifest | string>, cwd?: string): Promise<Manifest[]>

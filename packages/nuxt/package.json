@@ -1,0 +1,22 @@
+{
+  "name": "@blue-css/nuxt",
+  "version": "0.1.0",
+  "description": "Nuxt module for Blue CSS: full stylesheet in dev, tree-shaken against client and server chunks in production.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": { "types": "./src/module.d.ts", "default": "./src/module.js" }
+  },
+  "files": ["src"],
+  "scripts": { "test": "node --test \"test/**/*.test.js\"" },
+  "peerDependencies": {
+    "nuxt": ">=3.10"
+  },
+  "dependencies": {
+    "@blue-css/engine": "workspace:*",
+    "@nuxt/kit": "^4.6.4"
+  },
+  "devDependencies": {
+    "nuxt": "^4.6.4"
+  }
+}

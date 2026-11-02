@@ -4,3 +4,6 @@ dist/
 examples/*.shaken.css
 *.log
 .DS_Store
+.output/
+.nuxt/
+.data/

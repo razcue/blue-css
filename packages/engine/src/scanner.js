@@ -54,12 +54,15 @@ export function createScanner(manifests) {
   const attrList = [...attrs].sort(byLength).map(escape).join('|')
 
   // Tags appear as `<tag` in markup (also inside JS strings), or as a quoted
-  // string passed as an argument / property value in compiled output:
-  //   createElementVNode("dialog"  jsx("dialog"  h('dialog')  as: "button"
-  //   ɵɵelementStart(0, "dialog")  document.createElement("dialog")
-  // A bare `case "dialog":` or `x === "dialog"` (framework internals) is not.
+  // string passed as an argument, array item or element-ish prop in compiled output:
+  //   createElementVNode("dialog"  jsx("dialog"  h('dialog')  ɵɵelementStart(0, "dialog")
+  //   document.createElement("dialog")  as: "button"  tag: "nav"  default: "button"
+  // A bare `case "dialog":`, `x === "dialog"` or `enforce: "pre"` is not.
   const tagRe = tagList
-    ? new RegExp(String.raw`(?:<|[(,:\[]\s*\\?["'\x60])(${tagList})(?=[\s/>"'\x60\\]|$)`, 'gi')
+    ? new RegExp(
+        String.raw`(?:<|(?:[(,\[]|\b(?:as|tag|is|el|element|component|default)\s*:)\s*\\?["'\x60])(${tagList})(?=[\s/>"'\x60\\]|$)`,
+        'gi',
+      )
     : null
 
   // Attributes appear in markup (`role="tab"`, `role=tab`, `popover`), in

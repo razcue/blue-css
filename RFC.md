@@ -153,14 +153,22 @@ This also catches what libraries render from `node_modules` (reka-ui emits
 
 ### Integrations
 
+Server bundles are scanned for **app modules only**. The unminified Vue
+runtime on the server is full of dev messages ("v-model … on `<input>`"), and
+everything a library renders also exists in the client bundle anyway.
+
+The Nuxt module does not wrap the Vite plugin. It needs both Vite builds to have
+finished, and the CSS has to exist before prerendering. So it computes the CSS
+at `nitro:build:before` and writes it at `nitro:build:public-assets`.
+
 All integrations share one engine: `scan(text) → tokens`,
 `resolve(tokens) → modules`, `build(modules) → css`.
 
 | Package           | When it runs                                                    |
 |-------------------|-----------------------------------------------------------------|
 | `@blue-css/cli`   | `blue-css build "dist/**/*.{html,js}" -o dist/blue.css` after any framework build |
-| `@blue-css/vite`  | In `generateBundle` (`enforce: 'post'`) it scans the in-memory chunks, then `emitFile`s the CSS so the content hash is correct |
-| `@blue-css/nuxt`  | Wraps the Vite plugin. Scans client **and** server chunks (SSR/islands) and injects the `<link>`. `nuxt generate` also scans the prerendered HTML |
+| `@blue-css/vite`  | In `generateBundle` it scans the in-memory chunks and the HTML entries, then `emitFile`s the CSS so the content hash is correct, and links it via `transformIndexHtml`. `plugin.api` exposes the result for SSR frameworks |
+| `@blue-css/nuxt`  | Scans every client chunk, plus the app's own modules in the server build (via a Vite `transform` hook), so server components and islands are covered. Writes `_nuxt/blue.<hash>.css`; a Nitro `render:html` plugin links it from SSR, prerendered and SPA pages |
 
 During development integrations serve the **full** CSS. Shaking happens only
 in production builds.
@@ -179,8 +187,8 @@ packages/
   core/      CSS modules + manifest (source of truth)
   engine/    scanner, resolver, builder (lightningcss)
   cli/       `blue-css` binary
-  vite/      (milestone 2)
-  nuxt/      (milestone 2)
+  vite/      Vite plugin
+  nuxt/      Nuxt module
   preset-reka/ (milestone 3)
 examples/    HTML recipes = docs = fixtures
 ```
@@ -191,7 +199,7 @@ always ship together, and a separate package would buy nothing yet.
 ## 10. Milestones
 
 1. **Core + CLI shaker:** modules, manifest, engine, CLI, examples,
-   visual verification. ← *current*
-2. Vite plugin, Nuxt module, `blue-css doctor`.
+   visual verification. ✓
+2. Vite plugin ✓, Nuxt module ✓, `blue-css doctor`. ← *current*
 3. `@blue-css/preset-reka`.
 4. Docs site built from the recipes (dogfooding Blue itself).

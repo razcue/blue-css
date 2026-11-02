@@ -68,6 +68,13 @@ describe('scanner', () => {
     assert.ok(t.has('tag:meter'))
   })
 
+  it('only reads quoted values after element-ish keys', () => {
+    const t = scan(`{name:\`nuxt:head\`,enforce:\`pre\`} {as:"dialog"} {tag: 'table'}`)
+    assert.ok(!t.has('tag:pre'), 'enforce: "pre" is a plugin option, not an element')
+    assert.ok(t.has('tag:dialog'))
+    assert.ok(t.has('tag:table'))
+  })
+
   it('ignores tag names in framework internals', () => {
     // React DOM: switch(type){case "dialog": …}; Vue: makeMap("html,body,dialog,…")
     const t = scan(`switch(n){case "dialog":case "details":break} n==="table"; makeMap("html,body,dialog,details,table")`)
@@ -164,6 +171,12 @@ describe('buildCss', () => {
     const result = await buildCss({ content: [examples] })
     assert.ok(result.files.length >= 3)
     assert.ok(result.files.every((f) => f.endsWith('.html')))
+  })
+
+  it('never scans source maps', async () => {
+    const { SOURCE_MAP } = await import('../src/index.js')
+    for (const f of ['a.js.map', 'a.js.map.json', 'b.css.map']) assert.ok(SOURCE_MAP.test(f), f)
+    assert.ok(!SOURCE_MAP.test('payload.json'))
   })
 
   it('fails loudly when nothing matches', async () => {

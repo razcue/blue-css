@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import { join, resolve as resolvePath } from 'node:path'
 import { pathToFileURL } from 'node:url'
@@ -8,7 +9,7 @@ import { resolve } from './resolve.js'
 import { createScanner } from './scanner.js'
 
 export { build, layerOrder, SCOPE } from './build.js'
-export { findFiles, scanFiles, SCANNABLE } from './files.js'
+export { findFiles, scanFiles, SCANNABLE, SOURCE_MAP } from './files.js'
 export { indexModules, resolve } from './resolve.js'
 export { createScanner, parseToken, vocabulary } from './scanner.js'
 export { core }
@@ -58,6 +59,43 @@ export async function loadManifests(presets = [], cwd = process.cwd()) {
 }
 
 /**
+ * Load manifests once and expose a scanner plus a token → stylesheet builder.
+ * Integrations (Vite, Nuxt) use this to scan in-memory output.
+ *
+ * @param {import('./types').Config & { cwd?: string }} [config]
+ * @returns {Promise<import('./types').Context>}
+ */
+export async function createContext(config = {}) {
+  const cwd = config.cwd ?? process.cwd()
+  const manifests = await loadManifests(config.presets, cwd)
+  const scanner = createScanner(manifests)
+  const allIds = manifests.flatMap((m) => m.modules.map((mod) => mod.id))
+
+  return {
+    manifests,
+    scanner,
+    /** @param {Set<string> | 'all'} tokens */
+    async build(tokens) {
+      const { modules, reasons } = resolve(manifests, tokens, {
+        safelist: config.safelist,
+        reset: config.reset ?? true,
+      })
+      const result = await build(manifests, modules, {
+        minify: config.minify ?? true,
+        banner: config.banner,
+      })
+      return {
+        ...result,
+        files: [],
+        tokens: tokens === 'all' ? new Set() : tokens,
+        included: modules.map((m) => ({ id: m.id, reason: reasons.get(m.id) })),
+        excluded: allIds.filter((id) => !reasons.has(id)),
+      }
+    },
+  }
+}
+
+/**
  * Scan `content`, resolve modules and build the stylesheet.
  *
  * @param {import('./types').Config & { cwd?: string, full?: boolean }} config
@@ -65,36 +103,33 @@ export async function loadManifests(presets = [], cwd = process.cwd()) {
  */
 export async function buildCss(config = {}) {
   const cwd = config.cwd ?? process.cwd()
-  const manifests = await loadManifests(config.presets, cwd)
+  const context = await createContext(config)
+  if (config.full) return context.build('all')
 
-  let files = []
-  let tokens = 'all'
-  if (!config.full) {
-    if (!config.content || (Array.isArray(config.content) && config.content.length === 0)) {
-      throw new Error('No `content` to scan. Pass globs/directories of your built output, or build the full stylesheet.')
-    }
-    files = await findFiles(config.content, { cwd, ignore: config.ignore })
-    if (files.length === 0) {
-      throw new Error(`No files matched ${JSON.stringify(config.content)} in ${cwd}. Did the framework build run first?`)
-    }
-    tokens = await scanFiles(files, createScanner(manifests))
+  if (!config.content || (Array.isArray(config.content) && config.content.length === 0)) {
+    throw new Error('No `content` to scan. Pass globs/directories of your built output, or build the full stylesheet.')
   }
-
-  const { modules, reasons } = resolve(manifests, tokens, {
-    safelist: config.safelist,
-    reset: config.reset ?? true,
-  })
-  const result = await build(manifests, modules, {
-    minify: config.minify ?? true,
-    banner: config.banner,
-  })
-
-  const allIds = manifests.flatMap((m) => m.modules.map((mod) => mod.id))
-  return {
-    ...result,
-    files,
-    tokens: tokens === 'all' ? new Set() : tokens,
-    included: modules.map((m) => ({ id: m.id, reason: reasons.get(m.id) })),
-    excluded: allIds.filter((id) => !reasons.has(id)),
+  const files = await findFiles(config.content, { cwd, ignore: config.ignore })
+  if (files.length === 0) {
+    throw new Error(`No files matched ${JSON.stringify(config.content)} in ${cwd}. Did the framework build run first?`)
   }
+  const tokens = await scanFiles(files, context.scanner)
+  return { ...(await context.build(tokens)), files }
+}
+
+/**
+ * Short content hash for cache-busting file names.
+ * @param {string} css
+ */
+export function contentHash(css) {
+  return createHash('sha256').update(css).digest('base64url').slice(0, 8)
+}
+
+/**
+ * One-line summary of a build for integration logs.
+ * @param {import('./types').BuildResult} result
+ */
+export function summary(result) {
+  const kb = (n) => `${(n / 1024).toFixed(1)} kB`
+  return `${result.included.length} modules shipped, ${result.excluded.length} shaken · ${kb(result.bytes)} (${kb(result.gzip)} gzip)`
 }
