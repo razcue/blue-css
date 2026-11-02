@@ -1,0 +1,100 @@
+/*
+ * Design tokens.
+ *
+ * Names follow shadcn/ui so one theme drives both Blue and shadcn components.
+ * Declared inside @layer blue.tokens: an (unlayered) shadcn theme in your app
+ * overrides every value here automatically.
+ *
+ * Tokens beyond the shadcn set are prefixed --blue-* and fall back to
+ * Tailwind v4 theme variables where one exists.
+ */
+:root {
+  color-scheme: light dark;
+
+  --radius: 0.625rem;
+
+  --background: light-dark(oklch(1 0 0), oklch(0.145 0 0));
+  --foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --card: light-dark(oklch(1 0 0), oklch(0.205 0 0));
+  --card-foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --popover: light-dark(oklch(1 0 0), oklch(0.205 0 0));
+  --popover-foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --primary: light-dark(oklch(0.488 0.217 264.4), oklch(0.623 0.188 259.8));
+  --primary-foreground: light-dark(oklch(0.985 0 0), oklch(0.985 0 0));
+  --secondary: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --secondary-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --muted: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --muted-foreground: light-dark(oklch(0.556 0 0), oklch(0.708 0 0));
+  --accent: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --accent-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --destructive: light-dark(oklch(0.577 0.245 27.325), oklch(0.704 0.191 22.216));
+  --border: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 10%));
+  --input: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 15%));
+  --ring: light-dark(oklch(0.623 0.188 259.8), oklch(0.546 0.215 262.9));
+
+  --chart-1: light-dark(oklch(0.646 0.222 41.116), oklch(0.488 0.243 264.376));
+  --chart-2: light-dark(oklch(0.6 0.118 184.704), oklch(0.696 0.17 162.48));
+  --chart-3: light-dark(oklch(0.398 0.07 227.392), oklch(0.769 0.188 70.08));
+  --chart-4: light-dark(oklch(0.828 0.189 84.429), oklch(0.627 0.265 303.9));
+  --chart-5: light-dark(oklch(0.769 0.188 70.08), oklch(0.645 0.246 16.439));
+
+  --sidebar: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --sidebar-foreground: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --sidebar-accent-foreground: light-dark(oklch(0.205 0 0), oklch(0.985 0 0));
+  --sidebar-border: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 10%));
+  --sidebar-ring: var(--ring);
+
+  /* Blue extensions */
+  --blue-destructive-foreground: oklch(0.985 0 0);
+  --blue-success: light-dark(oklch(0.527 0.154 150.069), oklch(0.723 0.219 149.579));
+  --blue-warning: light-dark(oklch(0.666 0.179 58.318), oklch(0.828 0.189 84.429));
+  --blue-info: light-dark(oklch(0.546 0.245 262.881), oklch(0.707 0.165 254.624));
+
+  --blue-font-sans: var(
+    --font-sans,
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"
+  );
+  --blue-font-mono: var(
+    --font-mono,
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace
+  );
+
+  --blue-radius-sm: calc(var(--radius) - 4px);
+  --blue-radius-md: calc(var(--radius) - 2px);
+  --blue-radius-lg: var(--radius);
+  --blue-radius-xl: calc(var(--radius) + 4px);
+
+  --blue-flow: 1rem;
+  --blue-gap: 1rem;
+  --blue-gutter: clamp(1rem, 4vw, 2rem);
+  --blue-control-height: 2.25rem;
+  --blue-content-width: 72rem;
+  --blue-prose-width: 70ch;
+  --blue-sidebar-width: 16rem;
+  --blue-grid-min: 14rem;
+
+  --blue-shadow-xs: 0 1px 2px 0 oklch(0 0 0 / 5%);
+  --blue-shadow-sm: 0 1px 3px 0 oklch(0 0 0 / 10%), 0 1px 2px -1px oklch(0 0 0 / 10%);
+  --blue-shadow-md: 0 4px 6px -1px oklch(0 0 0 / 10%), 0 2px 4px -2px oklch(0 0 0 / 10%);
+  --blue-shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 10%), 0 4px 6px -4px oklch(0 0 0 / 10%);
+
+  --blue-focus-ring: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+  --blue-invalid-ring: 0 0 0 3px color-mix(in oklab, var(--destructive) 20%, transparent);
+  --blue-duration: 150ms;
+  --blue-ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Explicit theme switches: shadcn's `.dark` class, or data-theme. */
+:root:is(.dark, [data-theme="dark"]),
+:where(.dark, [data-theme="dark"]) {
+  color-scheme: dark;
+}
+
+:root:is(.light, [data-theme="light"]),
+:where(.light, [data-theme="light"]) {
+  color-scheme: light;
+}

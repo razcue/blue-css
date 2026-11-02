@@ -1,0 +1,160 @@
+/*
+ * Menus and listboxes, styled by ARIA role.
+ *
+ *   <div role="menu">
+ *     <div role="menuitem">Profile</div>
+ *     <div role="separator"></div>
+ *     <div role="menuitem" data-variant="destructive">Log out</div>
+ *   </div>
+ *
+ * Highlight follows :hover, :focus-visible, aria-selected and the
+ * data-highlighted attribute that headless libraries set.
+ */
+
+:where(:is([role="menu"], [role="listbox"]):not([data-slot])) {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 8rem;
+  max-width: 100%;
+  max-height: var(--blue-menu-max-height, 24rem);
+  overflow-y: auto;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-md);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  box-shadow: var(--blue-shadow-md);
+  font-size: 0.875rem;
+  list-style: none;
+  outline: none;
+
+  & > * { margin: 0; }
+
+  &:is([popover]) { margin: 0; }
+}
+
+:where([role="menubar"]:not([data-slot])) {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: var(--blue-control-height);
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-md);
+  background-color: var(--background);
+  box-shadow: var(--blue-shadow-xs);
+  list-style: none;
+
+  & > :is([role="menuitem"], button) {
+    padding: 0.25rem 0.5rem;
+    border: 0;
+    border-radius: var(--blue-radius-sm);
+    background: transparent;
+    color: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: none;
+
+    &:is(:hover, :focus-visible, [data-highlighted], [aria-expanded="true"]) {
+      background-color: var(--accent);
+      color: var(--accent-foreground);
+      outline: none;
+    }
+  }
+}
+
+:where(:is([role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"]):not([data-slot], [role="menubar"] > *)) {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border: 0;
+  border-radius: var(--blue-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  text-decoration: none;
+  cursor: default;
+  user-select: none;
+  outline: none;
+
+  &:is(:hover, :focus-visible, [data-highlighted]) {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  &:is(:disabled, [aria-disabled="true"], [data-disabled]) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &[data-variant="destructive"] {
+    color: var(--destructive);
+
+    &:is(:hover, :focus-visible, [data-highlighted]) {
+      background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+      color: var(--destructive);
+    }
+  }
+
+  & > svg { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--muted-foreground); }
+
+  /* Trailing shortcut: <kbd> or a <small> at the end */
+  & > :is(kbd, small):last-child {
+    margin-inline-start: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+  }
+}
+
+/* Checked state indicator for checkbox/radio items and selected options */
+:where(:is([role="menuitemcheckbox"], [role="menuitemradio"], [role="option"]):not([data-slot])) {
+  padding-inline-end: 2rem;
+
+  &:is([aria-checked="true"], [aria-selected="true"])::after {
+    content: "";
+    position: absolute;
+    inset-inline-end: 0.625rem;
+    width: 0.5rem;
+    height: 0.3rem;
+    border-inline-start: 1.5px solid currentColor;
+    border-block-end: 1.5px solid currentColor;
+    rotate: -45deg;
+    translate: 0 -0.1rem;
+  }
+
+  &[role="menuitemradio"][aria-checked="true"]::after {
+    width: 0.375rem;
+    height: 0.375rem;
+    border: 0;
+    border-radius: 50%;
+    background-color: currentColor;
+    rotate: none;
+    translate: none;
+  }
+}
+
+/* Separators and group labels inside menus */
+:where(:is([role="menu"], [role="listbox"]) :is([role="separator"], hr)) {
+  height: 1px;
+  margin: 0.25rem -0.25rem;
+  border: 0;
+  background-color: var(--border);
+}
+
+:where(:is([role="menu"], [role="listbox"]) [role="group"] > :is([role="presentation"], [role="heading"]), :is([role="menu"], [role="listbox"]) > :is(h1, h2, h3, h4, h5, h6, [role="heading"])) {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--muted-foreground);
+}

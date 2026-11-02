@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kitchen sink · Blue CSS</title>
+  <link rel="stylesheet" href="../packages/core/dist/blue.css">
+</head>
+<body>
+  <header>
+    <a href="#">Blue CSS</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#typography" aria-current="page">Typography</a></li>
+        <li><a href="#buttons">Buttons</a></li>
+        <li><a href="#forms">Forms</a></li>
+        <li><a href="#widgets">Widgets</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <header>
+      <hgroup>
+        <h1>Kitchen sink</h1>
+        <p>Every element Blue styles, with zero classes.</p>
+      </hgroup>
+      <menu>
+        <li><button data-variant="outline" onclick="document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'">Toggle theme</button></li>
+      </menu>
+    </header>
+
+    <section id="typography">
+      <h2>Typography</h2>
+      <p>Blue styles <strong>semantic HTML</strong>: <a href="#">links</a>, <em>emphasis</em>, <mark>highlighted text</mark>, <abbr title="Cascading Style Sheets">CSS</abbr>, <code>inline code</code>, <kbd>⌘</kbd> <kbd>K</kbd>, <small>small print</small>, <del>deleted</del> and <ins>inserted</ins> text, H<sub>2</sub>O and E = mc<sup>2</sup>.</p>
+      <h3>Lists</h3>
+      <ul>
+        <li>Unordered item</li>
+        <li>Another item
+          <ol>
+            <li>Nested ordered</li>
+            <li>Second</li>
+          </ol>
+        </li>
+      </ul>
+      <blockquote>
+        <p>“Make it work, make it right, make it fast.”</p>
+        <footer>— Kent Beck</footer>
+      </blockquote>
+      <dl>
+        <dt>Plan</dt><dd>Pro, billed yearly</dd>
+        <dt>Seats</dt><dd>12 of 20 used</dd>
+      </dl>
+      <pre><code>&lt;button data-variant="outline"&gt;Cancel&lt;/button&gt;</code></pre>
+      <hr>
+    </section>
+
+    <section id="buttons">
+      <h2>Buttons &amp; badges</h2>
+      <div data-layout="row">
+        <button>Primary</button>
+        <button data-variant="secondary">Secondary</button>
+        <button data-variant="outline">Outline</button>
+        <button data-variant="ghost">Ghost</button>
+        <button data-variant="destructive">Destructive</button>
+        <button data-variant="link">Link</button>
+        <a role="button" href="#">Link as button</a>
+      </div>
+      <div data-layout="row">
+        <button data-size="sm">Small</button>
+        <button data-size="lg">Large</button>
+        <button data-size="icon" aria-label="Add">+</button>
+        <button aria-busy="true">Saving</button>
+        <button disabled>Disabled</button>
+      </div>
+      <div data-layout="row">
+        <span data-badge>Default</span>
+        <span data-badge data-variant="secondary">Secondary</span>
+        <span data-badge data-variant="outline">Outline</span>
+        <span data-badge data-variant="destructive">Destructive</span>
+        <span data-badge data-variant="success">Success</span>
+        <span data-badge data-variant="warning">Warning</span>
+      </div>
+    </section>
+
+    <section id="forms">
+      <h2>Forms</h2>
+      <form>
+        <fieldset data-layout="grid">
+          <label>Name <input name="name" placeholder="Ada Lovelace"></label>
+          <label>Email <input type="email" name="email" placeholder="ada@example.com"></label>
+          <label>Plan
+            <select name="plan">
+              <option>Hobby</option>
+              <option>Pro</option>
+              <option>Enterprise</option>
+            </select>
+          </label>
+          <label>Start date <input type="date" name="start"></label>
+        </fieldset>
+        <label>
+          Username
+          <input name="username" value="ada" aria-invalid="true" aria-describedby="username-help">
+          <small id="username-help">This username is already taken.</small>
+        </label>
+        <label>About <textarea name="about" placeholder="Tell us a little about yourself"></textarea></label>
+        <fieldset>
+          <legend>Notifications</legend>
+          <label><input type="checkbox" name="n1" checked> Email me about new invoices</label>
+          <label><input type="radio" name="freq" checked> Daily digest</label>
+          <label><input type="radio" name="freq"> Weekly digest</label>
+          <label><input type="checkbox" role="switch" name="mkt" checked> Marketing emails</label>
+        </fieldset>
+        <label>Volume <input type="range" name="volume"></label>
+        <label>Avatar <input type="file" name="avatar"></label>
+        <fieldset role="group">
+          <input type="email" placeholder="Subscribe to updates" aria-label="Email">
+          <button>Subscribe</button>
+        </fieldset>
+        <div data-layout="row">
+          <button type="submit">Save changes</button>
+          <button type="reset">Reset</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="cards">
+      <h2>Cards</h2>
+      <div data-layout="grid">
+        <article>
+          <header>
+            <h3>Create project</h3>
+            <p>Deploy your new project in one click.</p>
+          </header>
+          <p>Projects get a preview URL for every commit and a production URL for the main branch.</p>
+          <footer>
+            <button data-variant="outline">Cancel</button>
+            <button>Deploy</button>
+          </footer>
+        </article>
+        <article>
+          <header>
+            <hgroup>
+              <h3>Notifications</h3>
+              <p>You have 3 unread messages.</p>
+            </hgroup>
+            <button data-variant="ghost" data-size="sm">Mark read</button>
+          </header>
+          <progress value="66" max="100"></progress>
+          <meter value="0.4" low="0.3" high="0.8" optimum="0.9"></meter>
+          <progress></progress>
+        </article>
+      </div>
+    </section>
+
+    <section id="feedback">
+      <h2>Alerts</h2>
+      <div role="note">
+        <strong>Heads up!</strong>
+        <p>You can add components to your app using the CLI.</p>
+      </div>
+      <div role="alert" data-variant="destructive">
+        <strong>Payment failed</strong>
+        <p>Your card was declined. Please update your billing details.</p>
+      </div>
+      <div role="status" data-variant="success">
+        <strong>Saved</strong>
+        <p>Your changes have been saved.</p>
+      </div>
+      <div role="note" data-variant="warning"><strong>Trial ends in 3 days</strong></div>
+      <div role="note" data-variant="info"><strong>New: Dark mode follows your system.</strong></div>
+    </section>
+
+    <section id="widgets">
+      <h2>Widgets</h2>
+
+      <h3>Tabs (role-based)</h3>
+      <div role="tablist" aria-label="Account">
+        <button role="tab" aria-selected="true" aria-controls="tab-account">Account</button>
+        <button role="tab" aria-selected="false" aria-controls="tab-password">Password</button>
+      </div>
+      <div role="tabpanel" id="tab-account">
+        <p>Make changes to your account here.</p>
+      </div>
+
+      <h3>Accordion</h3>
+      <details name="faq" open>
+        <summary>Is it accessible?</summary>
+        <p>Yes. It styles native and ARIA semantics, so accessibility comes first.</p>
+      </details>
+      <details name="faq">
+        <summary>Does it work with Tailwind?</summary>
+        <p>Yes. Blue lives in its own cascade layer below Tailwind's utilities.</p>
+      </details>
+
+      <h3>Menu (role-based)</h3>
+      <div role="menu" aria-label="Account">
+        <h4>My account</h4>
+        <div role="menuitem" tabindex="-1">Profile <kbd>⇧⌘P</kbd></div>
+        <div role="menuitem" tabindex="-1" data-highlighted>Billing <kbd>⌘B</kbd></div>
+        <div role="menuitemcheckbox" aria-checked="true" tabindex="-1">Show status bar</div>
+        <div role="separator"></div>
+        <div role="menuitem" tabindex="-1" data-variant="destructive">Log out</div>
+      </div>
+
+      <h3>Toggles (role-based)</h3>
+      <div data-layout="row">
+        <button role="switch" aria-checked="true" aria-label="Airplane mode"><span></span></button>
+        <button role="switch" aria-checked="false" aria-label="Wi-Fi"><span></span></button>
+        <button role="checkbox" aria-checked="true" aria-label="Accept terms"></button>
+        <button role="checkbox" aria-checked="mixed" aria-label="Select all"></button>
+        <button role="radio" aria-checked="true" aria-label="Option A"></button>
+        <span role="slider" tabindex="0" aria-valuenow="50" aria-label="Volume"></span>
+        <span role="tooltip">Tooltip text</span>
+      </div>
+
+      <h3>Dialog &amp; popover</h3>
+      <div data-layout="row">
+        <button data-variant="outline" onclick="document.getElementById('confirm').showModal()">Open dialog</button>
+        <button data-variant="outline" popovertarget="pop">Open popover</button>
+      </div>
+      <dialog id="confirm" closedby="any">
+        <header>
+          <h2>Are you absolutely sure?</h2>
+          <p>This action cannot be undone. This will permanently delete your account.</p>
+        </header>
+        <form method="dialog">
+          <footer>
+            <button data-variant="outline" value="cancel">Cancel</button>
+            <button data-variant="destructive" value="ok">Delete account</button>
+          </footer>
+        </form>
+      </dialog>
+      <div id="pop" popover>
+        <p><strong>Dimensions</strong></p>
+        <p>Set the dimensions for the layer.</p>
+      </div>
+    </section>
+
+    <section id="loading">
+      <h2>Loading</h2>
+      <article aria-busy="true"></article>
+    </section>
+
+    <section id="opt-out" data-blue="off">
+      <h2>Opted out</h2>
+      <p>This section has <code>data-blue="off"</code>: <button>an unstyled button</button>.</p>
+    </section>
+  </main>
+
+  <footer>
+    <small>Built with Blue CSS — no classes were harmed.</small>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#">GitHub</a></li>
+        <li><a href="#">Docs</a></li>
+      </ul>
+    </nav>
+  </footer>
+</body>
+</html>

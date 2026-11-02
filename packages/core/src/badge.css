@@ -1,0 +1,45 @@
+/*
+ * Badges.
+ *
+ *   <span data-badge>New</span>
+ *   <span data-badge data-variant="secondary|outline|destructive|success|warning">…</span>
+ */
+
+:where([data-badge]:not([data-slot])) {
+  --_bg: var(--primary);
+  --_fg: var(--primary-foreground);
+  --_border: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  width: fit-content;
+  padding: 0.125rem 0.5rem;
+  border: 1px solid var(--_border);
+  border-radius: var(--blue-radius-md);
+  background-color: var(--_bg);
+  color: var(--_fg);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.33;
+  white-space: nowrap;
+  vertical-align: middle;
+  text-decoration: none;
+
+  & > svg { width: 0.75rem; height: 0.75rem; }
+
+  &[data-variant="secondary"] { --_bg: var(--secondary); --_fg: var(--secondary-foreground); }
+  &[data-variant="outline"] { --_bg: transparent; --_fg: var(--foreground); --_border: var(--border); }
+  &[data-variant="destructive"] { --_bg: var(--destructive); --_fg: var(--blue-destructive-foreground); }
+
+  &[data-variant="success"] {
+    --_bg: color-mix(in oklab, var(--blue-success) 15%, transparent);
+    --_fg: var(--blue-success);
+  }
+
+  &[data-variant="warning"] {
+    --_bg: color-mix(in oklab, var(--blue-warning) 18%, transparent);
+    --_fg: var(--blue-warning);
+  }
+}

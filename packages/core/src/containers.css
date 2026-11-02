@@ -1,0 +1,44 @@
+/*
+ * Generic containers: [data-layout=grid|row|stack|split].
+ *
+ * Lives in the last Blue layer so an explicit data-layout always beats the
+ * element's own display (e.g. <fieldset data-layout="grid">).
+ */
+:where([data-layout]) {
+  margin-block-end: var(--blue-flow);
+
+  &:last-child { margin-block-end: 0; }
+  & > * { margin: 0; }
+}
+
+:where(:is(ul, ol)[data-layout]) {
+  list-style: none;
+  padding: 0;
+}
+
+:where([data-layout="grid"]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--blue-grid-min), 100%), 1fr));
+  gap: var(--blue-gap);
+}
+
+:where([data-layout="row"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+:where([data-layout="stack"]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--blue-gap);
+}
+
+:where([data-layout="split"]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--blue-gap);
+}

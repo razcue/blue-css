@@ -1,0 +1,153 @@
+/*
+ * Buttons.
+ *
+ *   <button>                                  primary
+ *   <button data-variant="secondary|outline|ghost|destructive|link">
+ *   <button data-size="sm|lg|icon">
+ *   <button type="reset">                     outline by default
+ *   <a role="button" href="…">                link styled as a button
+ *   <button aria-busy="true">                 loading
+ *   <div role="group"><button>…</button>…</div>  joined group (see forms.css)
+ *
+ * Buttons carrying another role (tab, menuitem, switch, …) belong to their
+ * widget's styles, and shadcn components ([data-slot]) are left untouched.
+ */
+
+:where(
+    button:not([role]:not([role="button"]), [data-slot]),
+    input:is([type="submit"], [type="button"], [type="reset"]):not([data-slot]),
+    [role="button"]:not(button, [data-slot])
+  ) {
+  --_bg: var(--primary);
+  --_fg: var(--primary-foreground);
+  --_border: transparent;
+  --_hover: color-mix(in oklab, var(--_bg) 90%, transparent);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  height: var(--blue-control-height);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--_border);
+  border-radius: var(--blue-radius-md);
+  background-color: var(--_bg);
+  color: var(--_fg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  user-select: none;
+  box-shadow: var(--blue-shadow-xs);
+  transition:
+    color var(--blue-duration) var(--blue-ease),
+    background-color var(--blue-duration) var(--blue-ease),
+    border-color var(--blue-duration) var(--blue-ease),
+    box-shadow var(--blue-duration) var(--blue-ease);
+
+  &:hover { background-color: var(--_hover); }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is(:disabled, [aria-disabled="true"]) {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  & > svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    pointer-events: none;
+  }
+
+  /* Variants */
+  &:is([data-variant="secondary"]) {
+    --_bg: var(--secondary);
+    --_fg: var(--secondary-foreground);
+    --_hover: color-mix(in oklab, var(--secondary) 80%, var(--foreground) 6%);
+  }
+
+  &:is([data-variant="outline"], [type="reset"]:not([data-variant])) {
+    --_bg: var(--background);
+    --_fg: var(--foreground);
+    --_border: var(--input);
+    --_hover: var(--accent);
+  }
+
+  &:is([data-variant="ghost"]) {
+    --_bg: transparent;
+    --_fg: var(--foreground);
+    --_hover: var(--accent);
+    box-shadow: none;
+  }
+
+  &:is([data-variant="destructive"]) {
+    --_bg: var(--destructive);
+    --_fg: var(--blue-destructive-foreground);
+    --_hover: color-mix(in oklab, var(--destructive) 90%, transparent);
+
+    &:focus-visible {
+      border-color: var(--destructive);
+      box-shadow: var(--blue-invalid-ring);
+    }
+  }
+
+  &:is([data-variant="link"]) {
+    --_bg: transparent;
+    --_fg: var(--primary);
+    --_hover: transparent;
+    height: auto;
+    padding: 0;
+    box-shadow: none;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  /* Sizes */
+  &:is([data-size="sm"]) {
+    height: 2rem;
+    padding: 0.375rem 0.75rem;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+  }
+
+  &:is([data-size="lg"]) {
+    height: 2.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+
+  &:is([data-size="icon"]) {
+    width: var(--blue-control-height);
+    padding: 0;
+  }
+}
+
+:where(button[data-variant="ghost"], [role="button"][data-variant="ghost"]):hover {
+  color: var(--accent-foreground);
+}
+
+/* Loading */
+:where(
+    button[aria-busy="true"]:not([data-slot]),
+    [role="button"][aria-busy="true"]:not([data-slot])
+  ) {
+  pointer-events: none;
+
+  &::before {
+    content: "";
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    border: 2px solid currentColor;
+    border-inline-end-color: transparent;
+    border-radius: 50%;
+    animation: blue-spin 0.7s linear infinite;
+  }
+}

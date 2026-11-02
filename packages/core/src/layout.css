@@ -1,0 +1,186 @@
+/*
+ * Layout.
+ *
+ * The app shell is whichever element directly contains <main>: <body>, or the
+ * single wrapper a framework mounts into (#app, #__nuxt). Its direct
+ * <header>, <aside>, <main> and <footer> children form the page.
+ *
+ *   header / main / footer             → stacked page, centered content
+ *   + aside                            → sidebar layout (sidebar full height)
+ *   main > header                      → page header (title + actions)
+ *   main > aside                       → secondary column on wide screens
+ */
+
+:where(:has(> main)) {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: "header" "main" "footer";
+}
+
+:where(:has(> main) > header) { grid-area: header; }
+:where(:has(> main) > main) { grid-area: main; }
+:where(:has(> main) > footer) { grid-area: footer; }
+:where(:has(> main) > aside) { grid-area: aside; }
+
+:where(:has(> main) > :is(header, main, footer)) {
+  padding-inline: max(var(--blue-gutter), (100% - var(--blue-content-width)) / 2);
+}
+
+/* Site header */
+:where(:has(> main) > header) {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem var(--blue-gap);
+  min-height: 3.5rem;
+  padding-block: 0.5rem;
+  border-block-end: 1px solid var(--border);
+  background-color: color-mix(in oklab, var(--background) 85%, transparent);
+  backdrop-filter: blur(8px);
+
+  & > * { margin: 0; }
+
+  /* Brand: the first link or heading in the header. */
+  & > :is(a, h1, h2, h3, strong, hgroup):first-child {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+    text-decoration: none;
+  }
+}
+
+/* Main */
+:where(:has(> main) > main) {
+  padding-block: 2rem 3rem;
+  min-width: 0;
+}
+
+:where(main > section) {
+  margin-block-end: calc(var(--blue-flow) * 3);
+}
+
+:where(main > section:last-child) {
+  margin-block-end: 0;
+}
+
+/* Page header: <main><header><hgroup>…</hgroup><menu>…actions</menu></header> */
+:where(main > header) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--blue-gap);
+  margin-block-end: 2rem;
+
+  & > * { margin: 0; }
+  & :is(h1) { font-size: 1.875rem; font-weight: 700; }
+}
+
+/* Site footer */
+:where(:has(> main) > footer) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--blue-gap);
+  padding-block: 1.5rem;
+  border-block-start: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+
+  & > * { margin: 0; }
+}
+
+/* Sidebar shell */
+:where(:has(> main):has(> aside)) {
+  grid-template-columns: var(--blue-sidebar-width) minmax(0, 1fr);
+  grid-template-areas:
+    "aside header"
+    "aside main"
+    "aside footer";
+
+  & > :is(header, main, footer) {
+    padding-inline: var(--blue-gutter);
+  }
+}
+
+:where(:has(> main) > aside) {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0.75rem;
+  background-color: var(--sidebar);
+  color: var(--sidebar-foreground);
+  border-inline-end: 1px solid var(--sidebar-border);
+
+  & > * { margin: 0; }
+
+  & > :is(a, h1, h2, h3, strong, hgroup):first-child {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--sidebar-foreground);
+    text-decoration: none;
+  }
+
+  & > footer {
+    margin-block-start: auto;
+  }
+}
+
+@media (width < 48rem) {
+  :where(:has(> main):has(> aside)) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto;
+    grid-template-areas: "header" "aside" "main" "footer";
+  }
+
+  :where(:has(> main) > aside) {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--sidebar-border);
+    padding: 0.5rem var(--blue-gutter);
+
+    & > footer { display: none; }
+    & > :is(a, h1, h2, h3, strong, hgroup):first-child { white-space: nowrap; }
+  }
+}
+
+/* Secondary column inside main. Row-gap stays 0; spacing comes from flow. */
+@media (width >= 64rem) {
+  :where(main:has(> aside)) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    column-gap: 2.5rem;
+    align-items: start;
+
+    & > :not(aside) { grid-column: 1; }
+
+    & > aside {
+      grid-column: 2;
+      grid-row: 1 / span 24;
+      position: sticky;
+      top: 5rem;
+    }
+  }
+}
+
+:where(main aside) {
+  font-size: 0.875rem;
+}

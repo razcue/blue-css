@@ -1,0 +1,70 @@
+/*
+ * Tabs, styled by ARIA role. Works with any headless library or plain HTML:
+ *
+ *   <div role="tablist">
+ *     <button role="tab" aria-selected="true" aria-controls="a">Account</button>
+ *     <button role="tab" aria-selected="false" aria-controls="b">Password</button>
+ *   </div>
+ *   <div role="tabpanel" id="a">…</div>
+ */
+
+:where([role="tablist"]:not([data-slot])) {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  height: var(--blue-control-height);
+  padding: 3px;
+  border-radius: var(--blue-radius-lg);
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+  margin-block-end: 0.5rem;
+
+  &[aria-orientation="vertical"] {
+    flex-direction: column;
+    height: auto;
+  }
+}
+
+:where([role="tab"]:not([data-slot])) {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 100%;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--blue-radius-md);
+  background-color: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--blue-duration) var(--blue-ease), background-color var(--blue-duration) var(--blue-ease), box-shadow var(--blue-duration) var(--blue-ease);
+
+  &:hover { color: var(--foreground); }
+
+  &[aria-selected="true"] {
+    background-color: var(--background);
+    color: var(--foreground);
+    box-shadow: var(--blue-shadow-sm);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is(:disabled, [aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }
+}
+
+:where([role="tabpanel"]:not([data-slot])) {
+  outline: none;
+
+  &:focus-visible { box-shadow: var(--blue-focus-ring); border-radius: var(--blue-radius-md); }
+}

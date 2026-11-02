@@ -1,0 +1,109 @@
+/*
+ * Cards: every <article> is a card…
+ *
+ *   <article>
+ *     <header><h3>Title</h3><p>Description</p></header>
+ *     …content…
+ *     <footer><button>Save</button></footer>
+ *   </article>
+ *
+ * A lone <article> directly in <main> is special:
+ *   - with a <form> child, it's a focused page (sign in, sign up, checkout):
+ *     a narrow card centered on the page;
+ *   - otherwise it's a document or blog post, rendered as readable prose.
+ */
+
+:where(article:not([data-slot])) {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-xl);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  box-shadow: var(--blue-shadow-sm);
+
+  & > * { margin: 0; }
+
+  & > header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+
+    & > * { margin: 0; }
+    & > :is(h1, h2, h3, h4, h5, h6) { font-size: 1rem; font-weight: 600; line-height: 1.25; letter-spacing: 0; }
+    & > p { font-size: 0.875rem; color: var(--muted-foreground); }
+
+    /* Header with an action: <header><hgroup>…</hgroup><button>…</button></header> */
+    &:has(> hgroup) {
+      flex-direction: row;
+      align-items: start;
+      justify-content: space-between;
+    }
+
+    & > hgroup > :is(h1, h2, h3, h4, h5, h6) { font-size: 1rem; font-weight: 600; letter-spacing: 0; }
+    & > hgroup > p { font-size: 0.875rem; }
+  }
+
+  & > footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  & > :is(img, picture, video):first-child {
+    margin: -1.5rem -1.5rem 0;
+    width: calc(100% + 3rem);
+    max-width: none;
+    border-radius: var(--blue-radius-xl) var(--blue-radius-xl) 0 0;
+  }
+
+  /* Stat card: <article><header><p>Revenue</p></header><data value="…">$45k</data>…</article> */
+  & > data {
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1;
+  }
+
+  & article {
+    box-shadow: none;
+    background-color: transparent;
+  }
+}
+
+/* A single article in main with a form: centered, narrow card. */
+:where(main > article:only-of-type:has(> form)) {
+  width: 100%;
+  max-width: 26rem;
+  margin: clamp(1rem, 8vh, 5rem) auto;
+
+  & > header > :is(h1, h2) { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.015em; }
+}
+
+/* A single article in main without a form is a document, not a card. */
+:where(main > article:only-of-type:not(:has(> form))) {
+  display: block;
+  max-width: var(--blue-prose-width);
+  margin-inline: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+
+  & > * { margin-block: 0 var(--blue-flow); }
+  & > :last-child { margin-block-end: 0; }
+  & > :is(h2, h3, h4) { margin-block-start: calc(var(--blue-flow) * 2); }
+
+  & > header {
+    margin-block-end: calc(var(--blue-flow) * 2);
+
+    & > :is(h1, h2) { font-size: clamp(1.875rem, 1.4rem + 1.6vw, 2.5rem); font-weight: 800; letter-spacing: -0.025em; }
+    & > p { font-size: 1.125rem; }
+  }
+
+  & > p { line-height: 1.75; }
+}

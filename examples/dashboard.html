@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard · Acme</title>
+  <link rel="stylesheet" href="../packages/core/dist/blue.css">
+</head>
+<body>
+  <aside>
+    <a href="#">Acme Inc.</a>
+    <nav aria-label="Platform">
+      <h2>Platform</h2>
+      <ul>
+        <li><a href="#" aria-current="page">Dashboard</a></li>
+        <li><a href="#">Customers</a></li>
+        <li><a href="#">Invoices</a></li>
+        <li><a href="#">Reports</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Settings">
+      <h2>Settings</h2>
+      <ul>
+        <li><a href="#">Team</a></li>
+        <li><a href="#">Billing</a></li>
+      </ul>
+    </nav>
+    <footer>
+      <small>Signed in as <strong>ada@acme.dev</strong></small>
+    </footer>
+  </aside>
+
+  <header>
+    <nav aria-label="Breadcrumb">
+      <ol>
+        <li><a href="#">Home</a></li>
+        <li aria-current="page">Dashboard</li>
+      </ol>
+    </nav>
+    <menu>
+      <li><input type="search" placeholder="Search…" aria-label="Search"></li>
+      <li><button data-variant="ghost" data-size="sm">Help</button></li>
+    </menu>
+  </header>
+
+  <main>
+    <header>
+      <hgroup>
+        <h1>Dashboard</h1>
+        <p>Overview of your business this month.</p>
+      </hgroup>
+      <menu>
+        <li><button data-variant="outline">Export</button></li>
+        <li><button>New invoice</button></li>
+      </menu>
+    </header>
+
+    <section aria-label="Key metrics">
+      <ul data-layout="grid">
+        <li>
+          <article>
+            <header><p>Total revenue</p></header>
+            <data value="45231.89">$45,231.89</data>
+            <footer><span data-badge data-variant="success">+20.1%</span><small>from last month</small></footer>
+          </article>
+        </li>
+        <li>
+          <article>
+            <header><p>Subscriptions</p></header>
+            <data value="2350">+2,350</data>
+            <footer><span data-badge data-variant="success">+180.1%</span><small>from last month</small></footer>
+          </article>
+        </li>
+        <li>
+          <article>
+            <header><p>Churn</p></header>
+            <data value="0.032">3.2%</data>
+            <footer><span data-badge data-variant="warning">+0.4%</span><small>from last month</small></footer>
+          </article>
+        </li>
+        <li>
+          <article>
+            <header><p>Active now</p></header>
+            <data value="573">+573</data>
+            <footer><span data-badge data-variant="secondary">live</span><small>since last hour</small></footer>
+          </article>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <div role="tablist" aria-label="Invoices filter">
+        <button role="tab" aria-selected="true">All</button>
+        <button role="tab" aria-selected="false">Paid</button>
+        <button role="tab" aria-selected="false">Pending</button>
+        <button role="tab" aria-selected="false">Overdue</button>
+      </div>
+      <div role="tabpanel">
+        <figure>
+          <table>
+            <caption>Recent invoices</caption>
+            <thead>
+              <tr>
+                <th scope="col">Invoice</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Status</th>
+                <th scope="col" aria-sort="descending">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>INV001</td><td>Liam Johnson</td>
+                <td><span data-badge data-variant="success">Paid</span></td>
+                <td>$250.00</td>
+              </tr>
+              <tr aria-selected="true">
+                <td>INV002</td><td>Olivia Smith</td>
+                <td><span data-badge data-variant="outline">Pending</span></td>
+                <td>$150.00</td>
+              </tr>
+              <tr>
+                <td>INV003</td><td>Noah Williams</td>
+                <td><span data-badge data-variant="destructive">Overdue</span></td>
+                <td>$350.00</td>
+              </tr>
+              <tr>
+                <td>INV004</td><td>Emma Brown</td>
+                <td><span data-badge data-variant="success">Paid</span></td>
+                <td>$450.00</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr><td colspan="3">Total</td><td>$1,200.00</td></tr>
+            </tfoot>
+          </table>
+        </figure>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>© 2026 Acme Inc.</small>
+    <small>v1.0.0</small>
+  </footer>
+</body>
+</html>

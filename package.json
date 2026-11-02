@@ -1,0 +1,20 @@
+{
+  "name": "blue-css-monorepo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build-dist.mjs",
+    "test": "pnpm -r --if-present test",
+    "verify": "pnpm build && node scripts/verify.mjs",
+    "examples": "pnpm build && node scripts/build-examples.mjs"
+  },
+  "devDependencies": {
+    "@blue-css/cli": "workspace:*",
+    "@blue-css/core": "workspace:*",
+    "@blue-css/engine": "workspace:*"
+  }
+}

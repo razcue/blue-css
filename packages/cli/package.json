@@ -1,0 +1,14 @@
+{
+  "name": "@blue-css/cli",
+  "version": "0.1.0",
+  "description": "Build a tree-shaken Blue CSS stylesheet from your framework's build output.",
+  "type": "module",
+  "license": "MIT",
+  "bin": { "blue-css": "./bin/blue-css.js" },
+  "exports": { ".": "./src/cli.js" },
+  "files": ["bin", "src"],
+  "scripts": { "test": "node --test \"test/**/*.test.js\"" },
+  "dependencies": {
+    "@blue-css/engine": "workspace:*"
+  }
+}

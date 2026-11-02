@@ -1,0 +1,17 @@
+{
+  "name": "@blue-css/engine",
+  "version": "0.1.0",
+  "description": "Scanner, resolver and builder that tree-shake Blue CSS against your built output.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": { "types": "./src/types.d.ts", "default": "./src/index.js" }
+  },
+  "files": ["src"],
+  "scripts": { "test": "node --test \"test/**/*.test.js\"" },
+  "dependencies": {
+    "@blue-css/core": "workspace:*",
+    "lightningcss": "^1.33.0",
+    "tinyglobby": "^0.2.17"
+  }
+}

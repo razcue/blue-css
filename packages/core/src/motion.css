@@ -1,0 +1,27 @@
+/* Shared keyframes for overlays (dialog, popover, menu). */
+@keyframes blue-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes blue-zoom-in {
+  from { opacity: 0; scale: 0.96; }
+}
+
+@keyframes blue-slide-in {
+  from { opacity: 0; translate: 0 -0.25rem; }
+}
+
+@keyframes blue-spin {
+  to { rotate: 1turn; }
+}
+
+@keyframes blue-indeterminate {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --blue-duration: 0ms;
+  }
+}

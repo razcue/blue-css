@@ -1,0 +1,144 @@
+/*
+ * Non-native toggles rendered by headless libraries (reka-ui, Radix, Ark, …).
+ * Native <input type="checkbox" role="switch"> lives in forms.css.
+ *
+ *   <button role="switch" aria-checked="true"><span></span></button>    child = thumb
+ *   <button role="checkbox" aria-checked="true"><span>…icon…</span></button>
+ *   <button role="radio" aria-checked="true"><span></span></button>
+ *   <span role="slider" aria-valuenow="…"></span>                       thumb
+ */
+
+:where([role="switch"]:not(input, [data-slot])) {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  width: 2rem;
+  height: 1.15rem;
+  padding: 1px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background-color: var(--input);
+  box-shadow: var(--blue-shadow-xs);
+  cursor: pointer;
+  transition: background-color var(--blue-duration) var(--blue-ease);
+
+  & > :first-child,
+  &:empty::before {
+    content: "";
+    display: block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    background-color: var(--background);
+    box-shadow: var(--blue-shadow-sm);
+    pointer-events: none;
+    transition: translate var(--blue-duration) var(--blue-ease);
+  }
+
+  &[aria-checked="true"] {
+    background-color: var(--primary);
+
+    & > :first-child,
+    &:empty::before { translate: calc(2rem - 0.875rem - 4px) 0; background-color: var(--primary-foreground); }
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is(:disabled, [aria-disabled="true"], [data-disabled]) { opacity: 0.5; pointer-events: none; }
+}
+
+:where(:is([role="checkbox"], [role="radio"]):not(input, [data-slot], [role="menu"] *, [role="listbox"] *)) {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: 1px solid var(--input);
+  border-radius: var(--blue-radius-sm);
+  background-color: var(--background);
+  color: var(--primary-foreground);
+  box-shadow: var(--blue-shadow-xs);
+  cursor: pointer;
+
+  & svg { width: 0.75rem; height: 0.75rem; }
+
+  &:is([aria-checked="true"], [aria-checked="mixed"]) {
+    border-color: var(--primary);
+    background-color: var(--primary);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is(:disabled, [aria-disabled="true"], [data-disabled]) { opacity: 0.5; pointer-events: none; }
+}
+
+/* Checkbox without an icon: draw the check. */
+:where([role="checkbox"]:not(input, [data-slot], [role="menu"] *, [role="listbox"] *):not(:has(svg))) {
+  &[aria-checked="true"]::after {
+    content: "";
+    width: 0.625rem;
+    height: 0.625rem;
+    background-color: currentColor;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+
+  &[aria-checked="mixed"]::after {
+    content: "";
+    width: 0.5rem;
+    height: 0.125rem;
+    background-color: currentColor;
+  }
+
+  & > :empty { display: none; }
+}
+
+:where([role="radio"]:not(input, [data-slot], [role="menu"] *, [role="listbox"] *)) {
+  border-radius: 50%;
+  color: var(--primary);
+
+  &[aria-checked="true"] {
+    background-color: var(--background);
+
+    &::after {
+      content: "";
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+  }
+
+  & > :empty { display: none; }
+}
+
+:where([role="radiogroup"]:not([data-slot])) {
+  display: grid;
+  gap: 0.75rem;
+}
+
+:where([role="slider"]:not(input, [data-slot])) {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--primary);
+  border-radius: 50%;
+  background-color: var(--background);
+  box-shadow: var(--blue-shadow-sm);
+  cursor: grab;
+  transition: box-shadow var(--blue-duration) var(--blue-ease);
+
+  &:is(:hover, :focus-visible) {
+    outline: none;
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+}

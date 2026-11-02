@@ -1,0 +1,72 @@
+/*
+ * Tables.
+ *
+ *   <figure><table>…</table></figure>    scrolls horizontally when too wide
+ *   <tr aria-selected="true">            selected row
+ *   <th aria-sort="ascending">           sort indicator
+ */
+
+:where(table:not([data-slot])) {
+  width: 100%;
+  caption-side: bottom;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(figure:has(> table), div:has(> table:only-child)) {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-lg);
+
+  & > table { margin: 0; }
+  & > table :is(tr:last-child > *) { border-block-end: 0; }
+}
+
+:where(table:not([data-slot])) {
+  & caption {
+    padding-block: 1rem;
+    color: var(--muted-foreground);
+  }
+
+  & :is(th, td) {
+    padding: 0.5rem 0.75rem;
+    text-align: start;
+    vertical-align: middle;
+    border-block-end: 1px solid var(--border);
+  }
+
+  & th {
+    height: 2.5rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--foreground);
+  }
+
+  & thead th { color: var(--muted-foreground); }
+
+  & tbody tr {
+    transition: background-color var(--blue-duration) var(--blue-ease);
+
+    &:hover { background-color: color-mix(in oklab, var(--muted) 50%, transparent); }
+    &[aria-selected="true"] { background-color: var(--muted); }
+  }
+
+  & tfoot {
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    font-weight: 500;
+  }
+
+  & :is(td, th):has(> :is(input[type="checkbox"], button, menu):only-child) {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  & th[aria-sort]::after {
+    content: "↕";
+    margin-inline-start: 0.375rem;
+    opacity: 0.4;
+  }
+
+  & th[aria-sort="ascending"]::after { content: "↑"; opacity: 1; }
+  & th[aria-sort="descending"]::after { content: "↓"; opacity: 1; }
+}

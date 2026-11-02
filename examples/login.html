@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · Acme</title>
+  <link rel="stylesheet" href="../packages/core/dist/blue.css">
+</head>
+<body>
+  <main>
+    <article>
+      <header>
+        <h1>Sign in to Acme</h1>
+        <p>Enter your email below to sign in to your account.</p>
+      </header>
+      <form>
+        <label>
+          Email
+          <input type="email" name="email" placeholder="m@example.com" autocomplete="email" required>
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" autocomplete="current-password" aria-invalid="true" aria-describedby="pw-error" required>
+          <small id="pw-error">Password must be at least 8 characters.</small>
+        </label>
+        <label><input type="checkbox" name="remember" checked> Remember me for 30 days</label>
+        <button type="submit">Sign in</button>
+        <button type="button" data-variant="outline">Sign in with GitHub</button>
+      </form>
+      <footer>
+        <small>Don't have an account? <a href="#">Sign up</a></small>
+      </footer>
+    </article>
+  </main>
+</body>
+</html>

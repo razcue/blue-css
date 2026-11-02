@@ -1,0 +1,49 @@
+/*
+ * Alerts and callouts.
+ *
+ *   <div role="alert"><strong>Heads up!</strong><p>…</p></div>
+ *   <div role="status" data-variant="success">Saved.</div>
+ *   <aside role="note" data-variant="info">…</aside>
+ *
+ * Variants: destructive, success, warning, info.
+ * Empty live regions stay invisible so they can be filled later.
+ */
+
+:where(:is(div, section, aside, p)[role="alert"], :is(div, section, aside, p)[role="status"], :is(div, section, aside, p)[role="note"]):where(:not(:empty, [data-slot])) {
+  --_tone: var(--foreground);
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-lg);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  font-size: 0.875rem;
+
+  & > * { margin: 0; }
+  & > :is(strong, h1, h2, h3, h4, h5, h6):first-child { font-size: 0.875rem; font-weight: 600; line-height: 1.4; letter-spacing: 0; color: var(--_tone); }
+  & > :not(:first-child) { color: var(--muted-foreground); }
+
+  &:has(> svg:first-child) {
+    grid-template-columns: 1rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+
+    & > svg { width: 1rem; height: 1rem; translate: 0 0.125rem; color: var(--_tone); }
+    & > :not(svg) { grid-column: 2; }
+  }
+
+  &[data-variant] {
+    color: var(--_tone);
+    border-color: color-mix(in oklab, var(--_tone) 35%, var(--border));
+    background-color: color-mix(in oklab, var(--_tone) 6%, var(--card));
+
+    & > :not(:first-child) { color: color-mix(in oklab, var(--_tone) 85%, var(--foreground)); }
+  }
+
+  &[data-variant="destructive"] { --_tone: var(--destructive); }
+  &[data-variant="success"] { --_tone: var(--blue-success); }
+  &[data-variant="warning"] { --_tone: var(--blue-warning); }
+  &[data-variant="info"] { --_tone: var(--blue-info); }
+}

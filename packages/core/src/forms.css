@@ -1,0 +1,318 @@
+/*
+ * Forms.
+ *
+ *   <label>Email <input type="email" aria-describedby="h"></label>
+ *   <small id="h">We never share it.</small>        helper text
+ *   <input aria-invalid="true">                      error state (also :user-invalid)
+ *   <label><input type="checkbox"> Remember me</label>
+ *   <input type="checkbox" role="switch">            switch
+ *   <fieldset role="group"><input><button></fieldset>  joined controls
+ *   <fieldset data-layout="grid">…</fieldset>        multi-column fields
+ */
+
+:where(form) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--blue-gap);
+
+  & > * { margin: 0; }
+}
+
+:where(fieldset) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--blue-gap);
+
+  & > * { margin: 0; }
+}
+
+:where(legend) {
+  float: left;
+  width: 100%;
+  margin-block-end: 0.25rem;
+  font-weight: 600;
+
+  & + * { clear: both; }
+}
+
+:where(label) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25;
+
+  &:has(:disabled) { opacity: 0.7; cursor: not-allowed; }
+
+  & > small { font-weight: 400; }
+}
+
+:where(label:has(> input:is([type="checkbox"], [type="radio"]))) {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+:where(label, fieldset, form) small,
+:where(:is(input, select, textarea) + small) {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+
+:where(:is(input, select, textarea)[aria-invalid="true"] + small),
+:where(label:has([aria-invalid="true"]) > small) {
+  color: var(--destructive);
+}
+
+/* Text-like controls */
+:where(
+    input:not([type="checkbox"], [type="radio"], [type="range"], [type="file"], [type="color"], [type="submit"], [type="button"], [type="reset"], [type="image"], [type="hidden"], [data-slot]),
+    select:not([data-slot]),
+    textarea:not([data-slot])
+  ) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: var(--blue-control-height);
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--input);
+  border-radius: var(--blue-radius-md);
+  background-color: transparent;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  box-shadow: var(--blue-shadow-xs);
+  outline: none;
+  transition: border-color var(--blue-duration) var(--blue-ease), box-shadow var(--blue-duration) var(--blue-ease);
+
+  &::placeholder { color: var(--muted-foreground); opacity: 1; }
+
+  &:focus-visible {
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is([aria-invalid="true"], :user-invalid) {
+    border-color: var(--destructive);
+
+    &:focus-visible { box-shadow: var(--blue-invalid-ring); }
+  }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:read-only:not(select) { background-color: var(--muted); }
+}
+
+:where(input[type="search"]) {
+  border-radius: 999px;
+  padding-inline: 1rem;
+}
+
+:where(input:is([type="date"], [type="time"], [type="datetime-local"], [type="month"], [type="week"])) {
+  &::-webkit-calendar-picker-indicator { opacity: 0.6; cursor: pointer; }
+}
+
+:where(textarea:not([data-slot])) {
+  height: auto;
+  min-height: 4rem;
+  padding-block: 0.5rem;
+  field-sizing: content;
+}
+
+:where(select:not([data-slot], [multiple], [size])) {
+  appearance: none;
+  padding-inline-end: 2.25rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1rem) 50%,
+    calc(100% - 0.75rem) 50%;
+  background-size: 0.25rem 0.25rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+:where(select:is([multiple], [size]):not([data-slot])) {
+  height: auto;
+  padding: 0.25rem;
+
+  & option { padding: 0.25rem 0.5rem; border-radius: var(--blue-radius-sm); }
+}
+
+:where(select option) {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+}
+
+/* Checkbox & radio */
+:where(input:is([type="checkbox"], [type="radio"]):not([data-slot], [role="switch"])) {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid var(--input);
+  border-radius: var(--blue-radius-sm);
+  background-color: var(--background);
+  box-shadow: var(--blue-shadow-xs);
+  cursor: pointer;
+  transition: background-color var(--blue-duration) var(--blue-ease), border-color var(--blue-duration) var(--blue-ease);
+
+  &::before {
+    content: "";
+    width: 0.625rem;
+    height: 0.625rem;
+    background-color: var(--primary-foreground);
+    scale: 0;
+    transition: scale var(--blue-duration) var(--blue-ease);
+  }
+
+  &:is(:checked, :indeterminate) {
+    border-color: var(--primary);
+    background-color: var(--primary);
+
+    &::before { scale: 1; }
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is([aria-invalid="true"], :user-invalid) { border-color: var(--destructive); }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+:where(input[type="checkbox"]:not([data-slot], [role="switch"]))::before {
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+:where(input[type="checkbox"]:not([data-slot], [role="switch"]):indeterminate)::before {
+  height: 0.125rem;
+  clip-path: none;
+}
+
+:where(input[type="radio"]:not([data-slot])) {
+  border-radius: 50%;
+
+  &::before {
+    width: 0.375rem;
+    height: 0.375rem;
+    border-radius: 50%;
+  }
+}
+
+/* Switch: <input type="checkbox" role="switch"> */
+:where(input[type="checkbox"][role="switch"]:not([data-slot])) {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  width: 2rem;
+  height: 1.15rem;
+  padding: 1px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background-color: var(--input);
+  box-shadow: var(--blue-shadow-xs);
+  cursor: pointer;
+  transition: background-color var(--blue-duration) var(--blue-ease);
+
+  &::before {
+    content: "";
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    background-color: var(--background);
+    box-shadow: var(--blue-shadow-sm);
+    transition: translate var(--blue-duration) var(--blue-ease);
+  }
+
+  &:checked {
+    background-color: var(--primary);
+
+    &::before { translate: calc(2rem - 0.875rem - 4px) 0; background-color: var(--primary-foreground); }
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+/* Range, color, file */
+:where(input[type="range"]:not([data-slot])) {
+  width: 100%;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+:where(input[type="color"]:not([data-slot])) {
+  width: 3rem;
+  height: var(--blue-control-height);
+  padding: 0.25rem;
+  border: 1px solid var(--input);
+  border-radius: var(--blue-radius-md);
+  cursor: pointer;
+}
+
+:where(input[type="file"]:not([data-slot])) {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid var(--input);
+  border-radius: var(--blue-radius-md);
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  cursor: pointer;
+
+  &::file-selector-button {
+    height: 1.75rem;
+    margin-inline-end: 0.75rem;
+    padding: 0 0.75rem;
+    border-radius: var(--blue-radius-sm);
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+}
+
+/* Groups: joined inputs and buttons */
+:where([role="group"]:has(> :is(input, select, button, a[role="button"]))) {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+
+  & > * {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  & > :not(:first-child) { margin-inline-start: -1px; }
+  & > :first-child { border-start-start-radius: var(--blue-radius-md); border-end-start-radius: var(--blue-radius-md); }
+  & > :last-child { border-start-end-radius: var(--blue-radius-md); border-end-end-radius: var(--blue-radius-md); }
+  & > :is(input, select) { flex: 1; }
+  & > :focus-visible { position: relative; z-index: 1; }
+}
+
+/* <search><form><input type="search"><button></form></search> */
+:where(search) {
+  display: block;
+
+  & form { flex-direction: row; align-items: center; gap: 0.5rem; }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@blue-css/core",
+  "version": "0.1.0",
+  "description": "Classless, semantic CSS for MVPs. Write good HTML, ship a tree-shaken stylesheet.",
+  "type": "module",
+  "license": "MIT",
+  "exports": {
+    ".": "./manifest.js",
+    "./manifest": "./manifest.js",
+    "./blue.css": "./dist/blue.css",
+    "./blue.min.css": "./dist/blue.min.css",
+    "./src/*": "./src/*"
+  },
+  "files": ["manifest.js", "src", "dist"],
+  "sideEffects": false
+}
