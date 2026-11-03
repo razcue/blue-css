@@ -1,0 +1,54 @@
+/*
+ * The razcue.github.io family look (slate light, navy dark), with Blue's blue
+ * as the accent instead of sky/mint. Mapped onto Nuxt UI's tokens.
+ */
+:root {
+  --bz-bg: #ffffff;
+  --bz-surface: #f8fafc;
+  --bz-text: #1e293b;
+  --bz-text-secondary: #64748b;
+  --bz-accent: #2563eb;
+
+  --ui-primary: var(--bz-accent);
+  --ui-bg: var(--bz-bg);
+  --ui-bg-muted: var(--bz-surface);
+  --ui-bg-elevated: var(--bz-surface);
+  --ui-bg-accented: #eef2f7;
+  --ui-text-highlighted: var(--bz-text);
+  --ui-text: var(--bz-text);
+  --ui-text-toned: #334155;
+  --ui-text-muted: var(--bz-text-secondary);
+  --ui-text-dimmed: #94a3b8;
+  --ui-text-inverted: #ffffff;
+  --ui-border: #e2e8f0;
+  --ui-border-muted: #eef2f7;
+  --ui-border-accented: #cbd5e1;
+}
+
+.dark {
+  --bz-bg: #0a1628;
+  --bz-surface: #111f3a;
+  --bz-text: #e6efff;
+  --bz-text-secondary: #8b9bbd;
+  --bz-accent: #60a5fa;
+
+  --ui-primary: var(--bz-accent);
+  --ui-bg: var(--bz-bg);
+  --ui-bg-muted: var(--bz-surface);
+  --ui-bg-elevated: var(--bz-surface);
+  --ui-bg-accented: #1b2f55;
+  --ui-text-highlighted: var(--bz-text);
+  --ui-text: #cdd9f2;
+  --ui-text-toned: #a9b7d6;
+  --ui-text-muted: var(--bz-text-secondary);
+  --ui-text-dimmed: #5c6d90;
+  --ui-text-inverted: #0a1628;
+  --ui-border: #1b2f55;
+  --ui-border-muted: #152645;
+  --ui-border-accented: #2a4675;
+}
+
+.dark .shiki,
+.dark pre {
+  background-color: var(--bz-surface);
+}

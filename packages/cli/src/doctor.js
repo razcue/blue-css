@@ -29,6 +29,9 @@ const MIME = {
   '.webp': 'image/webp',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
+  '.wasm': 'application/wasm',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml',
 }
 
 /** Skip links that obviously aren't pages. */

@@ -1,0 +1,22 @@
+{
+  "name": "blue-css-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "generate:pages": "NUXT_APP_BASE_URL=/blue-css/ nuxt generate && node scripts/site-base.mjs .output/public --base /blue-css/",
+    "postinstall": "nuxt prepare",
+    "test": "node --test \"scripts/*.test.mjs\""
+  },
+  "dependencies": {
+    "@blue-css/core": "workspace:*",
+    "@blue-css/engine": "workspace:*",
+    "@blue-css/preset-reka": "workspace:*",
+    "better-sqlite3": "^12.11.1",
+    "docus": "^5.15.0",
+    "nuxt": "^4.6.4"
+  }
+}

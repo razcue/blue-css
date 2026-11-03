@@ -216,7 +216,8 @@ packages/
   vite/      Vite plugin
   nuxt/      Nuxt module
   preset-reka/ reka-ui preset (playground/ renders every covered primitive)
-examples/    HTML recipes = docs = fixtures
+examples/    HTML recipes = fixtures for visual verification
+docs/        Docus site: live recipes, reference generated from the manifests
 ```
 
 The proposed `scanner` and `builder` packages were merged into `engine`. They
@@ -228,4 +229,5 @@ always ship together, and a separate package would buy nothing yet.
    visual verification. ✓
 2. Vite plugin ✓, Nuxt module ✓, `blue-css doctor` ✓.
 3. `@blue-css/preset-reka` ✓.
-4. Docs site built from the recipes (dogfooding Blue itself). ← *next*
+4. Docs site ✓: Docus 5, a custom homepage, live recipes rendered with Blue in
+   isolated iframes, and reference tables generated from the manifests.

@@ -18,8 +18,8 @@ styles your output actually uses.
 
 See [RFC.md](./RFC.md) for the design and roadmap.
 
-> Status: milestones 1–3 done (core, CLI, Vite plugin, Nuxt module,
-> `blue-css doctor`, reka-ui preset). Next: a docs site built from the recipes.
+> Status: milestones 1–4 done: core, CLI, Vite plugin, Nuxt module,
+> `blue-css doctor`, reka-ui preset, and the [docs site](./docs) (Docus).
 
 ## Quick start
 
@@ -296,6 +296,20 @@ so the build-time scan could not see it. Ship the modules anyway with:
   rendering, but interaction-only markup still needs the `safelist`.
 - The doctor needs Playwright: `npm i -D playwright && npx playwright install chromium`.
 
+## Documentation site
+
+`docs/` is a [Docus](https://docus.dev) site (Nuxt Content + Nuxt UI):
+- **Live recipes.** Every recipe is a live example rendered with the real Blue
+  stylesheet inside an isolated iframe.
+- **Generated figures.** The homepage's numbers and the reference tables
+  (modules, triggers, tokens) are computed from the engine at build time.
+
+```bash
+pnpm docs:dev        # http://localhost:3000
+pnpm docs:generate   # static site in docs/.output/public
+pnpm docs:pages      # GitHub Pages build under /blue-css/
+```
+
 ## Development
 
 ```bash
@@ -311,5 +325,7 @@ packages/engine   scanner, resolver, builder (lightningcss)
 packages/cli      the `blue-css` binary
 packages/vite     Vite plugin (test/fixtures/app is a Vue app)
 packages/nuxt     Nuxt module (playground/ is a Nuxt app with a server component)
+packages/preset-reka  reka-ui preset (playground/ renders every covered primitive)
+docs/             Docus documentation site
 examples/         HTML recipes = docs = verification fixtures
 ```

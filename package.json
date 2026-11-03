@@ -10,7 +10,10 @@
     "build": "node scripts/build-dist.mjs",
     "test": "pnpm -r --if-present test",
     "verify": "pnpm build && node scripts/verify.mjs",
-    "examples": "pnpm build && node scripts/build-examples.mjs"
+    "examples": "pnpm build && node scripts/build-examples.mjs",
+    "docs:dev": "pnpm --filter blue-css-docs dev",
+    "docs:generate": "pnpm --filter blue-css-docs generate",
+    "docs:pages": "pnpm --filter blue-css-docs generate:pages"
   },
   "devDependencies": {
     "@blue-css/cli": "workspace:*",
