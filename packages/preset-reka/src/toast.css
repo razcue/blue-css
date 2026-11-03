@@ -1,0 +1,78 @@
+/*
+ * Toast: ToastViewport (region > ol) holds ToastRoot items (li[data-swipe-direction])
+ * with ToastTitle, ToastDescription (divs), ToastAction and ToastClose.
+ */
+:where(ol:has(> li[data-swipe-direction])) {
+  position: fixed;
+  z-index: 100;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 26rem;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 1rem;
+  list-style: none;
+  outline: none;
+}
+
+:where(li[data-swipe-direction]) {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 1rem;
+  row-gap: 0.25rem;
+  margin: 0;
+  padding: 1rem 2.5rem 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-lg);
+  background-color: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  box-shadow: var(--blue-shadow-lg);
+  pointer-events: auto;
+
+  /* Title, description */
+  & > div { grid-column: 1; }
+  & > div:first-child { font-weight: 600; }
+  & > div + div { opacity: 0.9; }
+
+  /* ToastAction */
+  & > button[data-reka-toast-announce-alt] { grid-column: 2; grid-row: 1 / span 2; }
+
+  /* ToastClose */
+  & > button[data-reka-toast-announce-exclude]:not([data-reka-toast-announce-alt]) {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+    color: var(--foreground);
+    box-shadow: none;
+    opacity: 0.6;
+
+    &:hover { opacity: 1; background-color: var(--accent); }
+  }
+
+  &[data-variant="destructive"] {
+    border-color: var(--destructive);
+    background-color: var(--destructive);
+    color: var(--blue-destructive-foreground);
+
+    & > button { color: inherit; }
+  }
+
+  &[data-state="open"] { animation: blue-reka-toast-in 300ms var(--blue-ease); }
+  &[data-state="closed"] { animation: blue-reka-fade-out 150ms var(--blue-ease); }
+
+  &[data-swipe="move"] { translate: var(--reka-toast-swipe-move-x) 0; }
+  &[data-swipe="cancel"] { translate: 0 0; transition: translate 200ms var(--blue-ease); }
+  &[data-swipe="end"] { animation: blue-reka-toast-swipe-out 100ms ease-out; }
+}

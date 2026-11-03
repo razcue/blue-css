@@ -1,0 +1,48 @@
+/*
+ * Enter/exit animations for reka-ui. reka's Presence keeps an element mounted
+ * until its exit animation ends, so `data-state="closed"` animations play out.
+ */
+@keyframes blue-reka-in {
+  from { opacity: 0; scale: 0.95; translate: var(--_blue-reka-slide, 0 0); }
+}
+
+@keyframes blue-reka-out {
+  to { opacity: 0; scale: 0.95; }
+}
+
+@keyframes blue-reka-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes blue-reka-fade-out {
+  to { opacity: 0; }
+}
+
+@keyframes blue-reka-collapsible-down {
+  from { height: 0; }
+  to { height: var(--reka-collapsible-content-height); }
+}
+
+@keyframes blue-reka-collapsible-up {
+  from { height: var(--reka-collapsible-content-height); }
+  to { height: 0; }
+}
+
+@keyframes blue-reka-accordion-down {
+  from { height: 0; }
+  to { height: var(--reka-accordion-content-height); }
+}
+
+@keyframes blue-reka-accordion-up {
+  from { height: var(--reka-accordion-content-height); }
+  to { height: 0; }
+}
+
+@keyframes blue-reka-toast-in {
+  from { translate: calc(100% + 1rem) 0; }
+}
+
+@keyframes blue-reka-toast-swipe-out {
+  from { translate: var(--reka-toast-swipe-end-x) 0; }
+  to { translate: calc(100% + 1rem) 0; }
+}

@@ -1,0 +1,64 @@
+/*
+ * Toolbars and separators, styled by ARIA role.
+ *
+ *   <div role="toolbar" aria-label="Formatting">
+ *     <button>Undo</button><div role="separator"></div><button>Redo</button>
+ *   </div>
+ *   <div role="separator"></div>                      horizontal rule outside menus
+ *   <div role="separator" aria-orientation="vertical">
+ */
+
+:where([role="toolbar"]:not([data-slot])) {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  width: fit-content;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-md);
+  background-color: var(--background);
+  box-shadow: var(--blue-shadow-xs);
+
+  &[aria-orientation="vertical"] { flex-direction: column; }
+
+  & > :is(button, a[role="button"]):not([aria-pressed], [role]:not([role="button"])) {
+    height: 2rem;
+    padding: 0.25rem 0.625rem;
+    border-color: transparent;
+    background-color: transparent;
+    color: var(--foreground);
+    box-shadow: none;
+
+    &:hover { background-color: var(--accent); color: var(--accent-foreground); }
+  }
+
+  & > [role="group"] { gap: 0.125rem; }
+
+  /* Separators in a horizontal toolbar are vertical lines, whatever they say. */
+  & > [role="separator"] {
+    align-self: stretch;
+    width: 1px;
+    height: auto;
+    margin: 0.25rem 0.125rem;
+    background-color: var(--border);
+  }
+
+  &[aria-orientation="vertical"] > [role="separator"] { width: auto; height: 1px; margin: 0.125rem 0.25rem; }
+}
+
+:where([role="separator"]:not([data-slot], [tabindex], [role="toolbar"] > *, [role="menu"] *, [role="menubar"] *, [role="listbox"] *)) {
+  flex-shrink: 0;
+  height: 1px;
+  width: 100%;
+  margin-block: var(--blue-flow);
+  border: 0;
+  background-color: var(--border);
+
+  &:is([aria-orientation="vertical"], [data-orientation="vertical"]) {
+    align-self: stretch;
+    width: 1px;
+    height: auto;
+    margin-block: 0;
+  }
+}

@@ -18,8 +18,8 @@ styles your output actually uses.
 
 See [RFC.md](./RFC.md) for the design and roadmap.
 
-> Status: milestones 1–2 done (core, CLI, Vite plugin, Nuxt module,
-> `blue-css doctor`). Next: the reka-ui preset.
+> Status: milestones 1–3 done (core, CLI, Vite plugin, Nuxt module,
+> `blue-css doctor`, reka-ui preset). Next: a docs site built from the recipes.
 
 ## Quick start
 
@@ -56,6 +56,44 @@ export default defineConfig({ plugins: [blue()] })
   `node_modules` render) and the HTML entries.
 - It emits `assets/blue-<hash>.css` and links it. For SSR setups without an
   `index.html`, pass `inject: false` and read `plugin.api.href`.
+
+### reka-ui (the shadcn-vue primitives), with no classes
+
+```js
+import reka from '@blue-css/preset-reka'
+
+blue({ presets: [reka] })                                 // Vite
+export default defineNuxtConfig({ blue: { presets: ['@blue-css/preset-reka'] } })  // Nuxt
+```
+
+Use reka-ui's unstyled primitives as they are:
+
+```vue
+<DialogRoot>
+  <DialogTrigger>Edit profile</DialogTrigger>
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogContent>
+      <header><DialogTitle>Edit profile</DialogTitle><DialogDescription>…</DialogDescription></header>
+      <form>…</form>
+      <footer><DialogClose data-variant="outline">Cancel</DialogClose><button>Save</button></footer>
+    </DialogContent>
+  </DialogPortal>
+</DialogRoot>
+```
+
+- **Covered:** Accordion, AlertDialog, Avatar, Checkbox, Collapsible,
+  Combobox, ContextMenu, Dialog, DropdownMenu, HoverCard, Label, Menubar,
+  Popover, Progress, RadioGroup, ScrollArea, Select, Separator, Slider, Switch,
+  Tabs, Toast, Toggle, ToggleGroup, Toolbar and Tooltip.
+- **Shaken per component:** each part ships only if your bundle imports it.
+- **Three recipes to know:**
+  - give `AvatarRoot` `role="img"` and an `aria-label`;
+  - set Progress's indicator transform as reka's docs show;
+  - put a `DialogClose` directly in `DialogContent` (outside header and
+    footer) and it becomes the corner "×".
+- **Try it:** `packages/preset-reka/playground` renders every covered primitive
+  (`?c=dialog`, `?c=select`, …).
 
 ### Anything else
 

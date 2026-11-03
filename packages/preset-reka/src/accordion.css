@@ -1,0 +1,81 @@
+/*
+ * Accordion: AccordionRoot > AccordionItem > AccordionHeader (h3) > AccordionTrigger (button)
+ *                                       └─ AccordionContent (role="region")
+ */
+
+/* Item */
+:where([data-state][data-orientation]:has(> :is(h1, h2, h3, h4, h5, h6) > button[aria-expanded])) {
+  border-block-end: 1px solid var(--border);
+  margin: 0;
+
+  &:last-child { border-block-end: 0; }
+}
+
+/* Header */
+:where(:is(h1, h2, h3, h4, h5, h6)[data-orientation]:has(> button[aria-expanded])) {
+  display: flex;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: normal;
+}
+
+/* Trigger: undo core's button look, add a chevron */
+:where(:is(h1, h2, h3, h4, h5, h6)[data-orientation] > button[aria-expanded]) {
+  flex: 1;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+  height: auto;
+  padding: 1rem 0;
+  border: 0;
+  border-radius: var(--blue-radius-md);
+  background: none;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: start;
+  white-space: normal;
+  box-shadow: none;
+
+  &:hover {
+    background: none;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  &:focus-visible { box-shadow: var(--blue-focus-ring); }
+
+  &::after {
+    content: "";
+    flex-shrink: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin: 0.25rem 0.25rem 0 0;
+    border-inline-end: 1.5px solid var(--muted-foreground);
+    border-block-end: 1.5px solid var(--muted-foreground);
+    rotate: 45deg;
+    transition: rotate 200ms var(--blue-ease), translate 200ms var(--blue-ease);
+  }
+
+  &[aria-expanded="true"]::after {
+    rotate: 225deg;
+    translate: 0 0.2rem;
+  }
+
+  &:disabled { opacity: 0.5; }
+}
+
+/* Content */
+:where([role="region"][style*="--reka-accordion-content-height"]) {
+  overflow: hidden;
+  font-size: 0.875rem;
+
+  & > :first-child { margin-block-start: 0; }
+  & > :last-child { margin-block-end: 1rem; }
+
+  &[data-state="open"] { animation: blue-reka-accordion-down 200ms var(--blue-ease); }
+  &[data-state="closed"] { animation: blue-reka-accordion-up 200ms var(--blue-ease); }
+}

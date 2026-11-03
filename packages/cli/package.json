@@ -19,13 +19,5 @@
   },
   "dependencies": {
     "@blue-css/engine": "workspace:*"
-  },
-  "peerDependencies": {
-    "playwright": ">=1.40"
-  },
-  "peerDependenciesMeta": {
-    "playwright": {
-      "optional": true
-    }
   }
 }

@@ -16,6 +16,11 @@ describe('parseToken', () => {
     assert.deepEqual(parseToken('attr:role=tab'), { kind: 'attr', name: 'role', value: 'tab' })
   })
 
+  it('parses text markers', () => {
+    assert.deepEqual(parseToken('text:--reka-collapsible-content-height'), { kind: 'text', name: '--reka-collapsible-content-height' })
+    assert.throws(() => parseToken('text:a b'), /Invalid trigger token/)
+  })
+
   it('rejects malformed tokens', () => {
     assert.throws(() => parseToken('dialog'), /Invalid trigger token/)
     assert.throws(() => parseToken('tag:dialog=x'), /tags cannot have values/)
@@ -73,6 +78,13 @@ describe('scanner', () => {
     assert.ok(!t.has('tag:pre'), 'enforce: "pre" is a plugin option, not an element')
     assert.ok(t.has('tag:dialog'))
     assert.ok(t.has('tag:table'))
+  })
+
+  it('finds text markers as whole words only', () => {
+    const preset = { name: 'p', dir: core.dir, layers: ['presets'], modules: [{ id: 'x', file: 'x.css', layer: 'presets', triggers: ['text:--lib-height'] }] }
+    const s = createScanner([core, preset])
+    assert.ok(s.scan('style: { "--lib-height": h }').has('text:--lib-height'))
+    assert.ok(!s.scan('--lib-heights').has('text:--lib-height'))
   })
 
   it('ignores tag names in framework internals', () => {

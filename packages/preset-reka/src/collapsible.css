@@ -1,0 +1,10 @@
+/*
+ * Collapsible and Accordion content: animate height from the CSS variables
+ * reka measures and writes inline.
+ */
+:where([style*="--reka-collapsible-content-height"]:not([style*="--reka-accordion-content-height"])) {
+  overflow: hidden;
+
+  &[data-state="open"] { animation: blue-reka-collapsible-down 200ms var(--blue-ease); }
+  &[data-state="closed"] { animation: blue-reka-collapsible-up 200ms var(--blue-ease); }
+}

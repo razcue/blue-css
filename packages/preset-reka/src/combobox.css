@@ -1,0 +1,38 @@
+/*
+ * Combobox: ComboboxAnchor holds the input (role="combobox") and an optional
+ * ComboboxTrigger (aria-haspopup="listbox"), which sits inside the input.
+ */
+:where(div:has(> input[role="combobox"])) {
+  position: relative;
+
+  & > input[role="combobox"] { padding-inline-end: 2.25rem; }
+
+  & > button[aria-haspopup="listbox"] {
+    position: absolute;
+    top: 50%;
+    right: 0.25rem;
+    translate: 0 -50%;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+    color: var(--muted-foreground);
+    box-shadow: none;
+
+    &:hover { background-color: var(--accent); color: var(--accent-foreground); }
+  }
+}
+
+:where([role="listbox"]:has(> [data-reka-combobox-viewport])) {
+  min-width: max(8rem, var(--reka-combobox-trigger-width, 0px));
+  max-height: var(--reka-combobox-content-available-height, 24rem);
+}
+
+/* ComboboxEmpty */
+:where([data-reka-combobox-viewport] > div:not([role])) {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}

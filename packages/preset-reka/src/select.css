@@ -1,0 +1,22 @@
+/*
+ * Select: SelectTrigger is button[role="combobox"] (styled by core forms);
+ * the content is a listbox around [data-reka-select-viewport].
+ */
+:where([role="listbox"]:has(> [data-reka-select-viewport])) {
+  min-width: max(8rem, var(--reka-select-trigger-width, 0px));
+  max-height: var(--reka-select-content-available-height, 24rem);
+  overflow: hidden;
+}
+
+/* SelectSeparator renders an empty aria-hidden div. */
+:where([data-reka-select-viewport] div[aria-hidden="true"]:empty) {
+  height: 1px;
+  margin: 0.25rem -0.25rem;
+  background-color: var(--border);
+}
+
+/* SelectValue */
+:where(button[role="combobox"] > span:first-child) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

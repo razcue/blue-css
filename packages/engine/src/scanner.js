@@ -15,11 +15,17 @@ const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 /**
  * Parse a token string into its parts.
  * @param {string} token
- * @returns {{ kind: 'tag', name: string } | { kind: 'attr', name: string, value?: string }}
+ * `text:<literal>` matches a library marker anywhere in the text, such as a CSS
+ * variable a component writes into its inline style (`text:--reka-collapsible-content-height`).
+ * @returns {{ kind: 'tag' | 'text', name: string } | { kind: 'attr', name: string, value?: string }}
  */
 export function parseToken(token) {
+  const text = /^text:([\w-]{3,})$/.exec(token)
+  if (text) return { kind: 'text', name: text[1] }
   const match = /^(tag|attr):([a-z][\w-]*)(?:=([\w-]+))?$/i.exec(token)
-  if (!match) throw new Error(`Invalid trigger token "${token}". Expected tag:<name>, attr:<name> or attr:<name>=<value>.`)
+  if (!match) {
+    throw new Error(`Invalid trigger token "${token}". Expected tag:<name>, attr:<name>, attr:<name>=<value> or text:<literal>.`)
+  }
   const [, kind, name, value] = match
   if (kind === 'tag' && value !== undefined) throw new Error(`Invalid trigger token "${token}": tags cannot have values.`)
   return kind === 'tag' ? { kind, name: name.toLowerCase() } : { kind, name, value }
@@ -32,26 +38,29 @@ export function parseToken(token) {
 export function vocabulary(manifests) {
   const tags = new Set()
   const attrs = new Set()
+  const texts = new Set()
   for (const manifest of manifests) {
     for (const mod of manifest.modules) {
       for (const token of mod.triggers ?? []) {
         const t = parseToken(token)
         if (t.kind === 'tag') tags.add(t.name)
+        else if (t.kind === 'text') texts.add(t.name)
         else attrs.add(t.name)
       }
     }
   }
-  return { tags, attrs }
+  return { tags, attrs, texts }
 }
 
 /**
  * @param {import('./types').Manifest[]} manifests
  */
 export function createScanner(manifests) {
-  const { tags, attrs } = vocabulary(manifests)
+  const { tags, attrs, texts } = vocabulary(manifests)
   const byLength = (a, b) => b.length - a.length
   const tagList = [...tags].sort(byLength).map(escape).join('|')
   const attrList = [...attrs].sort(byLength).map(escape).join('|')
+  const textList = [...texts].sort(byLength).map(escape).join('|')
 
   // Tags appear as `<tag` in markup (also inside JS strings), or as a quoted
   // string passed as an argument, array item or element-ish prop in compiled output:
@@ -75,6 +84,8 @@ export function createScanner(manifests) {
       )
     : null
 
+  const textRe = textList ? new RegExp(`(?<![\\w-])(${textList})(?![\\w-])`, 'g') : null
+
   /**
    * Scan text and add the tokens found to `into`.
    * @param {string} text
@@ -93,8 +104,12 @@ export function createScanner(manifests) {
         if (m[2]) into.add(`attr:${m[1]}=${m[2]}`)
       }
     }
+    if (textRe) {
+      textRe.lastIndex = 0
+      for (const m of text.matchAll(textRe)) into.add(`text:${m[1]}`)
+    }
     return into
   }
 
-  return { scan, tags, attrs }
+  return { scan, tags, attrs, texts }
 }

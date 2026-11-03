@@ -151,6 +151,53 @@
   color: var(--popover-foreground);
 }
 
+/* Select-only combobox: <button role="combobox"> (ARIA pattern; reka/Radix Select trigger) */
+:where(button[role="combobox"]:not([data-slot])) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: fit-content;
+  min-width: 8rem;
+  height: var(--blue-control-height);
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--input);
+  border-radius: var(--blue-radius-md);
+  background-color: transparent;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  white-space: nowrap;
+  text-align: start;
+  box-shadow: var(--blue-shadow-xs);
+  cursor: pointer;
+  transition: border-color var(--blue-duration) var(--blue-ease), box-shadow var(--blue-duration) var(--blue-ease);
+
+  &::after {
+    content: "";
+    flex-shrink: 0;
+    width: 0.4rem;
+    height: 0.4rem;
+    margin-inline-start: 0.25rem;
+    border-inline-end: 1.5px solid var(--muted-foreground);
+    border-block-end: 1.5px solid var(--muted-foreground);
+    rotate: 45deg;
+    translate: 0 -0.125rem;
+  }
+
+  &[data-placeholder] { color: var(--muted-foreground); }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is([aria-invalid="true"]) { border-color: var(--destructive); }
+  &:is(:disabled, [data-disabled]) { opacity: 0.5; cursor: not-allowed; }
+}
+
+:where(label:has(> button[role="combobox"]) > button[role="combobox"]) { width: 100%; }
+
 /* Checkbox & radio */
 :where(input:is([type="checkbox"], [type="radio"]):not([data-slot], [role="switch"])) {
   appearance: none;

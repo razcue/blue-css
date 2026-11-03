@@ -1,0 +1,79 @@
+/*
+ * Floating content: Popover, HoverCard, Tooltip, DropdownMenu, ContextMenu,
+ * Menubar, Select (popper), Combobox. reka wraps each in
+ * [data-reka-popper-content-wrapper] and marks the content with data-side.
+ */
+
+:where([data-reka-popper-content-wrapper] > [data-side]) {
+  /* reka copies the content's z-index onto the fixed wrapper. */
+  z-index: 50;
+  transform-origin: var(--reka-popper-transform-origin);
+  max-height: var(--reka-popper-available-height);
+  outline: none;
+
+  &[data-side="bottom"] { --_blue-reka-slide: 0 -0.5rem; }
+  &[data-side="top"] { --_blue-reka-slide: 0 0.5rem; }
+  &[data-side="left"] { --_blue-reka-slide: 0.5rem 0; }
+  &[data-side="right"] { --_blue-reka-slide: -0.5rem 0; }
+
+  &:is([data-state="open"], [data-state="delayed-open"], [data-state="instant-open"]) {
+    animation: blue-reka-in var(--blue-duration) var(--blue-ease);
+  }
+
+  &[data-state="closed"] { animation: blue-reka-out var(--blue-duration) var(--blue-ease); }
+
+  /* PopperArrow */
+  & > span:has(> svg[viewBox="0 0 12 6"]) svg { fill: var(--popover); }
+}
+
+/* Popover (role="dialog") and HoverCard (no role): a small panel, not a modal. */
+:where([data-reka-popper-content-wrapper] > :is([role="dialog"], :not([role])):not(:has(> [role="tooltip"]))) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 18rem;
+  max-width: var(--reka-popper-available-width);
+  padding: 1rem;
+  overflow: visible;
+  border: 1px solid var(--border);
+  border-radius: var(--blue-radius-md);
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  font-size: 0.875rem;
+  box-shadow: var(--blue-shadow-md);
+
+  & > * { margin: 0; }
+
+  & > header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    & > * { margin: 0; }
+    & > :is(h1, h2, h3, h4, h5, h6) { font-size: 0.875rem; font-weight: 600; letter-spacing: 0; line-height: 1.2; }
+    & > p { color: var(--muted-foreground); }
+  }
+
+  & > :is(h1, h2, h3, h4, h5, h6) { font-size: 0.875rem; font-weight: 600; letter-spacing: 0; }
+  & > small { color: var(--muted-foreground); font-size: 0.75rem; }
+}
+
+/* Tooltip: the visible bubble contains a visually hidden role="tooltip" copy. */
+:where([data-reka-popper-content-wrapper] > :has(> [role="tooltip"])) {
+  width: fit-content;
+  max-width: 20rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--blue-radius-md);
+  background-color: var(--foreground);
+  color: var(--background);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-wrap: balance;
+
+  & > span:has(> svg[viewBox="0 0 12 6"]) svg { fill: var(--foreground); }
+}
+
+/* Menus and listboxes: core styles the panel; fit it to the space reka measured. */
+:where([data-reka-popper-content-wrapper] > :is([role="menu"], [role="listbox"])) {
+  max-height: min(var(--blue-menu-max-height, 24rem), var(--reka-popper-available-height));
+}

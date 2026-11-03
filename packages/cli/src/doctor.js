@@ -83,7 +83,7 @@ export async function serveDirectory(root) {
  * Runs inside the page: collect every vocabulary token in the live DOM with
  * counts and a few readable element paths, plus the shipped module list.
  */
-function collectInPage({ tags, attrs, property }) {
+function collectInPage({ tags, attrs, texts, property }) {
   const tagSet = new Set(tags)
   const attrSet = new Set(attrs)
   const found = {}
@@ -118,6 +118,14 @@ function collectInPage({ tags, attrs, property }) {
       if (!attrSet.has(a.name)) continue
       add(`attr:${a.name}`, el)
       if (a.value) add(`attr:${a.name}=${a.value}`, el)
+    }
+  }
+
+  // Library markers (text: tokens) live in inline styles, e.g. a CSS variable
+  // a component sets on itself.
+  for (const text of texts) {
+    for (const el of document.querySelectorAll(`[style*="${text}"]`)) {
+      if (!el.closest('[data-blue="off"]') && !el.hasAttribute('data-slot')) add(`text:${text}`, el)
     }
   }
 
@@ -199,6 +207,7 @@ export async function runDoctor(options) {
         const data = await tab.evaluate(collectInPage, {
           tags: [...vocab.tags],
           attrs: [...vocab.attrs],
+          texts: [...vocab.texts],
           property: MODULES_PROPERTY,
         })
         const shipped = data.shipped ? data.shipped.split(/\s+/) : []
@@ -238,6 +247,7 @@ export async function runDoctor(options) {
 function normalizeUrl(url) {
   const u = new URL(url)
   u.hash = ''
+  if (!u.search) u.search = '' // "/?" and "/" are the same page
   return u.href
 }
 

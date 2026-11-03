@@ -83,20 +83,41 @@ Blue uses **shadcn's CSS variable names** as its theme contract:
 
 ## 6. Presets: reka-ui
 
-Core includes a **roles** layer. It styles any widget with correct ARIA
-(`tablist/tab`, `menu/menuitem`, `listbox/option`, `switch`, `checkbox`,
-`radio`, `slider`, `tooltip`), whichever headless library produced it.
+Core includes a **roles** layer. It styles any widget with correct ARIA,
+whichever headless library produced it:
 
-`@blue-css/preset-reka` (milestone 3) styles reka-ui primitives used
-**without** shadcn's Tailwind classes, using only what reka renders. It covers
-what is specific to reka:
+- `tablist`/`tab`, `menu`/`menuitem`, `listbox`/`option`
+- `switch`, `checkbox`, `radio`, `slider`, `tooltip`
+- `toolbar`, `separator`, select-only `combobox` buttons
+- `aria-pressed` toggle buttons, and role-less labels inside menus
 
-- `data-state` / `data-side` / `data-highlighted` / `data-disabled` animations
-  and states
-- `--reka-*` CSS variables (accordion and collapsible heights, popper
-  transform-origin, select trigger width, …)
-- popper wrapper positioning (`[data-reka-popper-content-wrapper]`), and
-  modal vs. popover dialog content (`[role=dialog]:not([data-side])`)
+`@blue-css/preset-reka` styles reka-ui primitives used **without** shadcn's
+Tailwind classes. It uses only what reka renders, as recorded from real
+production DOM in `packages/preset-reka/playground`:
+
+| Component | Hook used |
+|-----------|-----------|
+| Dialog, AlertDialog | `[role=dialog][data-dismissable-layer]:not([data-side])` is positioned as a modal. Reka sets no `aria-modal`. The overlay is the role-less `div[data-state]` right before it |
+| Popover, HoverCard, Tooltip, menus, Select, Combobox | `[data-reka-popper-content-wrapper] > [data-side]`: z-index (reka copies it onto the wrapper), `--reka-popper-transform-origin`, side-aware enter/exit animations. The tooltip bubble is the element containing the visually hidden `role="tooltip"` |
+| Accordion, Collapsible | Height animations driven by the `--reka-accordion/collapsible-content-height` variables reka writes inline. The accordion trigger is `h3[data-orientation] > button[aria-expanded]` |
+| Select, Combobox | `--reka-select/combobox-trigger-width`, viewports, the empty `aria-hidden` separator, the combobox trigger sitting inside its input |
+| Slider | `[data-slider-impl]` with its track and range spans |
+| Toast | `li[data-swipe-direction]`, its viewport `ol`, and the swipe variables |
+| ScrollArea | `[data-reka-scroll-area-viewport]`, `[data-scrollbarimpl]` |
+| Avatar | Reka renders bare `<span>`s, so the recipe is `<AvatarRoot role="img" aria-label="…">` (which avatars need anyway) |
+
+Known gaps:
+- **Progress:** needs the inline transform reka documents
+  (`translateX(-{100 - value}%)`). CSS cannot read `data-value` as a number
+  in every browser yet.
+- **Not covered yet:** NavigationMenu, Pagination, date/time pickers,
+  TagsInput, NumberField, PinInput, Stepper, Splitter and Tree.
+
+**Triggers** are markers found in reka's bundled code, such as
+`data-reka-select-viewport` or `text:--reka-accordion-content-height`. A
+preset module ships only when the app imports the component that renders it.
+A Select-only app gets select and popper styles, but no accordion, dialog or
+toast.
 
 Real shadcn-vue components can sit alongside them: `data-slot` excludes them,
 and they share the same tokens.
@@ -118,6 +139,9 @@ Token forms:
 - `tag:<name>`
 - `attr:<name>`
 - `attr:<name>=<value>`
+- `text:<literal>`: a library marker anywhere in the output, e.g. a CSS
+  variable a component writes inline. The doctor matches these against
+  inline styles in the live DOM
 
 Modules marked `always` (tokens, reset, base typography) always ship.
 Presets are additional manifests in the same format.
@@ -191,7 +215,7 @@ packages/
   cli/       `blue-css` binary
   vite/      Vite plugin
   nuxt/      Nuxt module
-  preset-reka/ (milestone 3)
+  preset-reka/ reka-ui preset (playground/ renders every covered primitive)
 examples/    HTML recipes = docs = fixtures
 ```
 
@@ -203,5 +227,5 @@ always ship together, and a separate package would buy nothing yet.
 1. **Core + CLI shaker:** modules, manifest, engine, CLI, examples,
    visual verification. ✓
 2. Vite plugin ✓, Nuxt module ✓, `blue-css doctor` ✓.
-3. `@blue-css/preset-reka`. ← *next*
-4. Docs site built from the recipes (dogfooding Blue itself).
+3. `@blue-css/preset-reka` ✓.
+4. Docs site built from the recipes (dogfooding Blue itself). ← *next*

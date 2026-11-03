@@ -116,6 +116,30 @@
   }
 }
 
+/* Submenu triggers */
+:where(:is([role="menuitem"])[aria-haspopup="menu"]:not([data-slot])) {
+  &::after {
+    content: "";
+    width: 0.375rem;
+    height: 0.375rem;
+    margin-inline-start: auto;
+    border-inline-end: 1.5px solid currentColor;
+    border-block-start: 1.5px solid currentColor;
+    rotate: 45deg;
+    opacity: 0.7;
+  }
+
+  &:is([aria-expanded="true"], [data-state="open"]) {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+}
+
+/* Libraries render empty indicator spans; the check below is drawn by CSS. */
+:where(:is([role="menuitemcheckbox"], [role="menuitemradio"], [role="option"]) > span[data-state]:empty) {
+  display: none;
+}
+
 /* Checked state indicator for checkbox/radio items and selected options */
 :where(:is([role="menuitemcheckbox"], [role="menuitemradio"], [role="option"]):not([data-slot])) {
   padding-inline-end: 2rem;
@@ -141,6 +165,15 @@
     rotate: none;
     translate: none;
   }
+}
+
+/* Labels: inside a menu or listbox every item has a role, so a role-less
+   block child is a label (reka/Radix MenuLabel, SelectLabel, ComboboxLabel). */
+:where(:is([role="menu"], [role="listbox"], :is([role="menu"], [role="listbox"]) [role="group"]) > div:not([role], [aria-hidden="true"]):not(:empty)) {
+  padding: 0.375rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
 }
 
 /* Separators and group labels inside menus */

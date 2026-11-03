@@ -1,0 +1,52 @@
+/*
+ * Dialog and AlertDialog. Core styles the panel ([role="dialog"]); reka sets no
+ * aria-modal, so the preset positions modal content (content without a popper
+ * side) and styles the overlay that precedes it.
+ *
+ *   <DialogPortal><DialogOverlay /><DialogContent>…</DialogContent></DialogPortal>
+ */
+
+/* Overlay: the role-less element right before the dialog content */
+:where(div[data-state]:not([role]):has(+ :is([role="dialog"], [role="alertdialog"])[data-dismissable-layer]:not([data-side]))) {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: oklch(0 0 0 / 50%);
+
+  &[data-state="open"] { animation: blue-reka-fade-in var(--blue-duration) var(--blue-ease); }
+  &[data-state="closed"] { animation: blue-reka-fade-out var(--blue-duration) var(--blue-ease); }
+}
+
+/* Modal content */
+:where(:is([role="dialog"], [role="alertdialog"])[data-dismissable-layer]:not([data-side], dialog, [data-slot])) {
+  position: fixed;
+  z-index: 50;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  outline: none;
+
+  &[data-state="open"] { animation: blue-reka-in var(--blue-duration) var(--blue-ease); }
+  &[data-state="closed"] { animation: blue-reka-out var(--blue-duration) var(--blue-ease); }
+
+  /* A button placed directly in the content (not in header/footer) is the close "×". */
+  & > button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 1.125rem;
+    line-height: 1;
+    box-shadow: none;
+    opacity: 0.7;
+
+    &:hover { opacity: 1; background-color: var(--accent); }
+  }
+
+  & > header { padding-inline-end: 2rem; }
+}

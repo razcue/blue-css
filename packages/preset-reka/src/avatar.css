@@ -1,0 +1,35 @@
+/*
+ * Avatar. reka renders bare <span>s, so give AvatarRoot the semantics an
+ * avatar needs anyway: <AvatarRoot role="img" aria-label="Ada Lovelace">.
+ * An AvatarRoot containing a loaded AvatarImage (img[role="img"]) works too.
+ */
+:where(span[role="img"]:has(> :is(img, span)), span:not([role]):has(> img[role="img"])) {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  overflow: hidden;
+  border-radius: 999px;
+  vertical-align: middle;
+
+  & > img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  /* AvatarFallback */
+  & > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}

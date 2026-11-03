@@ -142,3 +142,45 @@
     box-shadow: 0 0 0 4px color-mix(in oklab, var(--ring) 50%, transparent);
   }
 }
+
+/* Toggle buttons: <button aria-pressed="true|false"> (also reka Toggle / ToggleGroupItem). */
+:where(button[aria-pressed]:not([role], [data-slot])) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: var(--blue-control-height);
+  height: var(--blue-control-height);
+  padding: 0 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--blue-radius-md);
+  background-color: transparent;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: none;
+  transition: background-color var(--blue-duration) var(--blue-ease), color var(--blue-duration) var(--blue-ease);
+
+  &:hover {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+  }
+
+  &[aria-pressed="true"] {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  &[data-variant="outline"] {
+    border-color: var(--input);
+    box-shadow: var(--blue-shadow-xs);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: var(--blue-focus-ring);
+  }
+
+  &:is(:disabled, [aria-disabled="true"]) { opacity: 0.5; pointer-events: none; }
+}

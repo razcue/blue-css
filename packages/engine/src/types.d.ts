@@ -1,4 +1,4 @@
-/** `tag:<name>`, `attr:<name>` or `attr:<name>=<value>` */
+/** `tag:<name>`, `attr:<name>`, `attr:<name>=<value>` or `text:<literal>` */
 export type Token = string
 
 export interface ModuleDefinition {
@@ -105,6 +105,7 @@ export function createScanner(manifests: Manifest[]): {
   scan(text: string, into?: Set<Token>): Set<Token>
   tags: Set<string>
   attrs: Set<string>
+  texts: Set<string>
 }
 export function resolve(
   manifests: Manifest[],
