@@ -43,12 +43,11 @@ and publishes it to GitHub Pages.
 
 1. **Enable Pages from Actions.** In the repository, open **Settings → Pages**.
    Under **Build and deployment → Source**, choose **GitHub Actions**.
-2. **Have a `main` branch.** The workflow deploys on pushes to `main`. If the
-   repository has no `main` yet, create it from the branch you want to
-   publish, and make it the default branch in **Settings → General**.
+2. **Make `master` the default branch.** The workflow deploys on pushes to
+   `master`. Set it as the default branch in **Settings → General**.
 3. **Allow the branch to deploy.** **Settings → Environments → github-pages**
    limits which branches may deploy. By default only the default branch can.
-   Keep `main` allowed (it is, once it's the default branch).
+   Keep `master` allowed (it is, once it's the default branch).
 
 The first deployment publishes the site at
 `https://<owner>.github.io/<repository>/`, for this repository
@@ -56,7 +55,7 @@ The first deployment publishes the site at
 
 ### When it runs
 
-- **On push to `main`,** when anything that changes the site changes:
+- **On push to `master`,** when anything that changes the site changes:
   `docs/`, `packages/`, `examples/`, the root `package.json`, the pnpm
   lockfile and workspace file, or the workflow itself.
 - **On demand:** **Actions → pages → Run workflow** builds and deploys the

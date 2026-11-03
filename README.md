@@ -310,7 +310,7 @@ pnpm docs:generate   # static site in docs/.output/public
 pnpm docs:pages      # GitHub Pages build under /blue-css/
 ```
 
-The `pages` workflow publishes it to GitHub Pages on every push to `main`. For
+The `pages` workflow publishes it to GitHub Pages on every push to `master`. For
 the one-time setup, custom domains and troubleshooting, see
 [docs/README.md](./docs/README.md#deploying-to-github-pages).
 

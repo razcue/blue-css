@@ -4,7 +4,7 @@ export default defineAppConfig({
   },
   github: {
     url: 'https://github.com/razcue/blue-css',
-    branch: 'main',
+    branch: 'master',
     rootDir: 'docs',
   },
   ui: {

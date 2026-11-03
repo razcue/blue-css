@@ -5,7 +5,7 @@ name: pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     # The docs build reads the CSS, engine, preset and example pages, so changes
     # to any of them change the published site (sizes, tables, live previews).
     paths:
