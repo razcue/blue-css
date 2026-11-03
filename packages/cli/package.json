@@ -1,14 +1,31 @@
 {
   "name": "@blue-css/cli",
   "version": "0.1.0",
-  "description": "Build a tree-shaken Blue CSS stylesheet from your framework's build output.",
+  "description": "Build a tree-shaken Blue CSS stylesheet from your framework's build output, and check rendered pages with `blue-css doctor`.",
   "type": "module",
   "license": "MIT",
-  "bin": { "blue-css": "./bin/blue-css.js" },
-  "exports": { ".": "./src/cli.js" },
-  "files": ["bin", "src"],
-  "scripts": { "test": "node --test \"test/**/*.test.js\"" },
+  "bin": {
+    "blue-css": "./bin/blue-css.js"
+  },
+  "exports": {
+    ".": "./src/cli.js"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  },
   "dependencies": {
     "@blue-css/engine": "workspace:*"
+  },
+  "peerDependencies": {
+    "playwright": ">=1.40"
+  },
+  "peerDependenciesMeta": {
+    "playwright": {
+      "optional": true
+    }
   }
 }

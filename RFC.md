@@ -146,8 +146,10 @@ This also catches what libraries render from `node_modules` (reka-ui emits
   `v-html`, CMS or markdown content, and fully dynamic attribute values.
   Mitigations:
   - a `safelist` (module ids or tokens)
-  - `blue-css doctor` (milestone 2), which renders pages and flags elements
-    whose module was not shipped
+  - `blue-css doctor`, which renders pages (static builds served locally, or a
+    running server, optionally crawled) and flags elements whose module was
+    not shipped. Each stylesheet declares its modules in a `--blue-modules`
+    custom property, so the doctor reads the truth from the live page
   - `scripts/verify.mjs`, which compares screenshots of every example page
     built with the full CSS and with the shaken CSS
 
@@ -200,6 +202,6 @@ always ship together, and a separate package would buy nothing yet.
 
 1. **Core + CLI shaker:** modules, manifest, engine, CLI, examples,
    visual verification. ✓
-2. Vite plugin ✓, Nuxt module ✓, `blue-css doctor`. ← *current*
-3. `@blue-css/preset-reka`.
+2. Vite plugin ✓, Nuxt module ✓, `blue-css doctor` ✓.
+3. `@blue-css/preset-reka`. ← *next*
 4. Docs site built from the recipes (dogfooding Blue itself).

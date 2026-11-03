@@ -6,6 +6,13 @@ import { transform } from 'lightningcss'
 export const SCOPE = '@scope (:root) to ([data-blue="off"])'
 
 /**
+ * Custom property listing the modules a stylesheet ships, e.g.
+ * `--blue-modules: "tokens reset base button"`. `blue-css doctor` reads it from
+ * live pages, whichever integration delivered the CSS.
+ */
+export const MODULES_PROPERTY = '--blue-modules'
+
+/**
  * Ordered, de-duplicated list of `blue.*` sub-layers across manifests.
  * @param {import('./types').Manifest[]} manifests
  */
@@ -33,7 +40,8 @@ export async function build(manifests, modules, options = {}) {
     }
   }
 
-  const parts = []
+  const ids = modules.map((m) => m.id).join(' ')
+  const parts = [`@layer blue.tokens {\n:root { ${MODULES_PROPERTY}: "${ids}"; }\n}`]
 
   for (const mod of modules) {
     const source = await readFile(join(mod.manifest.dir, mod.file), 'utf8')

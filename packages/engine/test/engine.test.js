@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
-import { build, buildCss, core, createScanner, parseToken, resolve, SCOPE } from '../src/index.js'
+import { build, buildCss, core, createScanner, diagnose, MODULES_PROPERTY, parseToken, resolve, SCOPE } from '../src/index.js'
 
 const fixture = (name) => readFile(new URL(`./fixtures/${name}`, import.meta.url), 'utf8')
 const examples = fileURLToPath(new URL('../../../examples/', import.meta.url))
@@ -153,7 +153,39 @@ describe('build', () => {
   })
 })
 
+describe('diagnose', () => {
+  const hit = (n = 1, samples = ['x']) => ({ count: n, samples })
+
+  it('reports modules the DOM needs but the stylesheet lacks', () => {
+    const d = diagnose([core], { 'tag:dialog': hit(), 'tag:table': hit(2) }, ['tokens', 'base', 'table'])
+    assert.deepEqual(d.required, ['motion', 'table', 'dialog'])
+    assert.deepEqual(d.missing.map((m) => m.module), ['motion', 'dialog'])
+    const dialog = d.missing.find((m) => m.module === 'dialog')
+    assert.deepEqual(dialog.hits, [{ token: 'tag:dialog', count: 1, samples: ['x'] }])
+    assert.deepEqual(d.missing.find((m) => m.module === 'motion').via, ['dialog'])
+  })
+
+  it('reports unused and unknown shipped modules', () => {
+    const d = diagnose([core], { 'tag:table': hit() }, ['tokens', 'table', 'dialog', 'reka/tabs'])
+    assert.deepEqual(d.missing, [])
+    assert.deepEqual(d.unused, ['dialog'])
+    assert.deepEqual(d.unknown, ['reka/tabs'])
+  })
+
+  it('never requires always-on modules', () => {
+    const d = diagnose([core], { 'tag:p': hit() }, [])
+    assert.deepEqual(d.missing, [])
+  })
+})
+
 describe('buildCss', () => {
+  it('declares the shipped modules in --blue-modules', async () => {
+    const { css } = await buildCss({ content: [`${examples}login.html`], minify: false })
+    const match = new RegExp(`${MODULES_PROPERTY}: "([^"]+)"`).exec(css)
+    assert.ok(match, 'marker present')
+    assert.deepEqual(match[1].split(' '), ['tokens', 'reset', 'base', 'motion', 'layout', 'button', 'forms', 'card'])
+  })
+
   it('shakes against built output', async () => {
     const login = await buildCss({ content: [`${examples}login.html`] })
     const full = await buildCss({ full: true })

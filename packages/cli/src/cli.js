@@ -1,7 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, relative, resolve as resolvePath } from 'node:path'
 import { parseArgs } from 'node:util'
-import { buildCss, loadConfig } from '@blue-css/engine'
+import { buildCss, loadConfig, loadManifests } from '@blue-css/engine'
+import { formatReport, runDoctor } from './doctor.js'
 
 const HELP = `
 blue-css — tree-shaken, classless CSS for semantic HTML
@@ -10,6 +11,7 @@ Usage
   blue-css build [content...] [options]   scan built output, write only the CSS it uses
   blue-css full [options]                 write the complete stylesheet
   blue-css scan [content...] [options]    show which tokens and modules were detected
+  blue-css doctor <target...> [options]   render pages, report elements whose styles were shaken away
 
 Content
   Globs or directories of your *built* output (HTML, JS chunks, JSON payloads),
@@ -24,7 +26,17 @@ Options
       --no-reset          drop Blue's reset (when Tailwind preflight is present)
       --no-minify         readable output
       --report            print a size and module report to stderr
-      --json              (scan) machine-readable output
+      --json              (scan, doctor) machine-readable output
+
+Doctor
+  Targets are URLs (start your server first), build directories (served
+  locally; every *.html is a starting page) or HTML files. Needs Playwright.
+      --crawl             follow same-origin links
+      --max-pages <n>     stop after n pages (default 50)
+      --wait <ms>         extra wait after load, for client-rendered content
+      --root <dir>        where absolute paths resolve when given HTML files
+                          (default: the file's folder; pass the build dir)
+  Exits 1 when an element's module is missing, so it can gate CI.
   -h, --help
   -v, --version
 
@@ -32,6 +44,8 @@ Examples
   vite build && blue-css build dist -o dist/assets/blue.css --report
   blue-css build ".output/public" ".output/server/chunks" -o .output/public/blue.css
   blue-css full -o public/blue.css
+  blue-css doctor dist
+  blue-css doctor http://localhost:3000 --crawl
 `
 
 const kb = (n) => `${(n / 1024).toFixed(1)} kB`
@@ -62,6 +76,10 @@ export async function run(argv, io = {}) {
         'no-minify': { type: 'boolean' },
         report: { type: 'boolean' },
         json: { type: 'boolean' },
+        crawl: { type: 'boolean' },
+        'max-pages': { type: 'string' },
+        wait: { type: 'string' },
+        root: { type: 'string' },
         help: { type: 'boolean', short: 'h' },
         version: { type: 'boolean', short: 'v' },
       },
@@ -83,10 +101,12 @@ export async function run(argv, io = {}) {
     stdout.write(HELP.trimStart())
     return values.help ? 0 : 2
   }
-  if (!['build', 'full', 'scan'].includes(command)) {
+  if (!['build', 'full', 'scan', 'doctor'].includes(command)) {
     say(`blue-css: unknown command "${command}".\nRun \`blue-css --help\` for usage.`)
     return 2
   }
+
+  if (command === 'doctor') return doctor(content, values, { cwd, stdout, say })
 
   try {
     const config = await loadConfig({ cwd, file: values.config })
@@ -152,6 +172,42 @@ export async function run(argv, io = {}) {
     return 0
   } catch (error) {
     say(`blue-css: ${error.message}`)
+    return 1
+  }
+}
+
+/** `blue-css doctor` */
+async function doctor(targets, values, { cwd, stdout, say }) {
+  if (!targets.length) {
+    say('blue-css doctor: pass at least one URL, build directory or HTML file.')
+    return 2
+  }
+  const number = (name, fallback) => {
+    const v = values[name] === undefined ? fallback : Number(values[name])
+    if (!Number.isInteger(v) || v < 0) throw new Error(`--${name} must be a non-negative integer`)
+    return v
+  }
+  try {
+    const config = await loadConfig({ cwd, file: values.config })
+    const manifests = await loadManifests(
+      [...(config.presets ?? []), ...(values.preset ?? [])],
+      config.configFile ? dirname(config.configFile) : cwd,
+    )
+    const report = await runDoctor({
+      targets,
+      manifests,
+      cwd,
+      crawl: values.crawl ?? false,
+      maxPages: number('max-pages', 50),
+      wait: number('wait', 0),
+      root: values.root,
+      onPage: values.json ? undefined : (p) => say(`  ${p.error ? '✗' : p.missing?.length ? '!' : '·'} ${p.url}`),
+    })
+    if (values.json) stdout.write(JSON.stringify(report, null, 2) + '\n')
+    else stdout.write(formatReport(report, { origin: new URL(report.pages[0]?.url ?? 'http://x').origin }) + '\n')
+    return report.ok ? 0 : 1
+  } catch (error) {
+    say(`blue-css doctor: ${error.message}`)
     return 1
   }
 }

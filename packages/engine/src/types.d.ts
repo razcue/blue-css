@@ -69,6 +69,31 @@ export interface Context {
   build(tokens: Set<Token> | 'all'): Promise<BuildResult>
 }
 
+export interface Requirement {
+  module: string
+  /** Tokens in the DOM that trigger this module, with element counts and sample paths. */
+  hits: Array<{ token: Token; count: number; samples: string[] }>
+  /** Modules that need this one as a dependency (when it has no hits of its own). */
+  via: string[]
+}
+
+export interface Diagnosis {
+  shipped: string[]
+  required: string[]
+  missing: Requirement[]
+  /** Optional modules shipped but not needed by the inspected DOM. */
+  unused: string[]
+  /** Shipped ids no manifest knows (preset missing from the config?). */
+  unknown: string[]
+}
+
+export const MODULES_PROPERTY: string
+export function diagnose(
+  manifests: Manifest[],
+  found: Record<Token, { count: number; samples: string[] }>,
+  shipped: string[],
+): Diagnosis
+
 export function createContext(config?: Config & { cwd?: string }): Promise<Context>
 export function contentHash(css: string): string
 export function summary(result: BuildResult): string

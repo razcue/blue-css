@@ -18,8 +18,8 @@ styles your output actually uses.
 
 See [RFC.md](./RFC.md) for the design and roadmap.
 
-> Status: milestone 2 (core, CLI, Vite plugin, Nuxt module). Next:
-> `blue-css doctor` and the reka-ui preset.
+> Status: milestones 1–2 done (core, CLI, Vite plugin, Nuxt module,
+> `blue-css doctor`). Next: the reka-ui preset.
 
 ## Quick start
 
@@ -219,6 +219,44 @@ How it works:
   predictable with `:has()` and attribute selectors.
 - Over-inclusion costs bytes. Missing a module is a bug, so cover dynamic
   content with `safelist`.
+
+## Checking rendered pages: `blue-css doctor`
+
+The scanner reads build output, so markup that only appears at runtime can be
+missed. That includes `v-html`, CMS or markdown content, `<component :is>` and
+fully dynamic attributes. The doctor renders real pages in a headless browser
+and compares the live DOM with what each page's stylesheet shipped.
+
+```bash
+blue-css doctor dist                                # static build: every *.html is a starting page
+blue-css doctor http://localhost:3000 --crawl       # SSR app: start it first, follow same-origin links
+```
+
+```
+Missing modules (2): elements on these pages have no Blue styles
+  ✗ dialog (+ motion)  on /cms.html
+      tag:dialog ×1
+        dialog#promo
+  ✗ tabs  on /cms.html
+      attr:role=tablist ×1
+        main#content > div[role=tablist]
+
+This markup only exists at runtime (v-html, CMS/markdown content, dynamic tags),
+so the build-time scan could not see it. Ship the modules anyway with:
+  safelist: ['dialog', 'tabs']
+```
+
+- It exits with code 1 when something is missing, so it can gate CI.
+- `--json` gives machine-readable output.
+- It also lists modules that were shipped but unused on every inspected page,
+  which hints that the scan over-included.
+- Every Blue stylesheet declares what it contains in a `--blue-modules` custom
+  property on `:root`. That's how the doctor works no matter which integration
+  delivered the CSS.
+- Content that appears only after interaction (menus, portals that mount when
+  opened) isn't in the DOM at load time. `--wait <ms>` helps with late client
+  rendering, but interaction-only markup still needs the `safelist`.
+- The doctor needs Playwright: `npm i -D playwright && npx playwright install chromium`.
 
 ## Development
 
