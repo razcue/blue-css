@@ -7,7 +7,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "generate:pages": "NUXT_APP_BASE_URL=/blue-css/ nuxt generate && node scripts/site-base.mjs .output/public --base /blue-css/",
+    "generate:pages": "NUXT_APP_BASE_URL=${NUXT_APP_BASE_URL:-/blue-css/} nuxt generate && NUXT_APP_BASE_URL=${NUXT_APP_BASE_URL:-/blue-css/} node scripts/site-base.mjs .output/public",
     "postinstall": "nuxt prepare",
     "test": "node --test \"scripts/*.test.mjs\""
   },
